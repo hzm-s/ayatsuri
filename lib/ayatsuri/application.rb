@@ -1,5 +1,4 @@
 require 'ayatsuri/application/window'
-require 'ayatsuri/application/control'
 
 module Ayatsuri
 	class Application
@@ -16,19 +15,9 @@ module Ayatsuri
 				self.instance_variable_set(:@root_window, nil)
 			end
 
-			def ayatsuri_for(exe, root_window_id_spec)
+			def ayatsuri_for(exe, root_window_title, &bilding_block)
 				@exe = exe
-				@root_window = Window.new(nil, root_window_id_spec)
-			end
-
-			def has_textbox(name, options)
-				register_control(name, options)
-			end
-
-		private
-			
-			def register_control(name, options)
-				@root_window.register_control(name, options)
+				@root_window = Window.new(root_window_title).build(&bilding_block)
 			end
 		end
 
@@ -38,9 +27,6 @@ module Ayatsuri
 
 		def root_window
 			self.class.instance_variable_get(:@root_window)
-		end
-
-		def textbox
 		end
 	end
 end

@@ -3,30 +3,35 @@ require 'spec_helper'
 module Ayatsuri
 	class Application
 		describe Window do
-			let(:model) { described_class.new parent, id_spec }
+			let(:model) { described_class.new title }
 
-			let(:parent) { nil }
-			let(:id_spec) { { title: "the window title" } }
+			let(:title) { "the window title" }
 
-			describe "#append_child" do
-				subject { model.append_child name, child }
+			describe ".new" do
+				subject { model }
+				it { subject.title.should == title }
+			end
 
-				let(:name) { "control1" }
-				let(:child) { mock 'a child component' }
-
-				it { subject.child(name).should == child }
+			describe "#build" do
+				specify { expect {|b| model.build(&b) }.to yield_control }
+				it "building self children using WindowBuilder" do
+					WindowBuilder.should_receive(:new).with(model)
+					model.build do
+						# building block
+					end
+				end
 			end
 
 			describe "#==" do
 				subject { model == other }
 
 				context "when equal" do
-					let(:other) { described_class.new parent, id_spec }
+					let(:other) { described_class.new title }
 					it { should be_true }
 				end
 
 				context "when NOT equal" do
-					let(:other) { described_class.new :root, id_spec }
+					let(:other) { described_class.new "other window" }
 					it { should be_false }
 				end
 			end

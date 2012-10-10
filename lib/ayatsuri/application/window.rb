@@ -1,28 +1,22 @@
+require 'ayatsuri/application/window_builder'
+
 module Ayatsuri
 	class Application
 		
 		class Window
-			attr_reader :parent, :identification
+			attr_reader :title
 
-			def initialize(parent, id_spec)
-				@parent = parent
-				@identification = AutoIt::Identification.new(id_spec)
-				@children = {}
+			def initialize(title)
+				@title = title
 			end
 
-			def append_child(name, component)
-				@children[name] = component
-				self
-			end
-
-			def child(name)
-				@children[name]
+			def build(&building_block)
+				WindowBuilder.new(self).instance_exec(&building_block)
 			end
 
 			def ==(other)
 				other.instance_of?(self.class) &&
-					self.parent == other.parent &&
-					self.identification == other.identification
+					self.title == other.title
 			end
 		end
 	end

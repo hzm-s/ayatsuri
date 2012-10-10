@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 class App < Ayatsuri::Application
-	ayatsuri_for "app.exe", title: "the app"
-	has_textbox "textbox1", id: 1
+	ayatsuri_for "app.exe", "the app" do
+		textbox "textbox1", id: 1
+	end
 end
 
 module Ayatsuri
@@ -18,7 +19,7 @@ module Ayatsuri
 		describe "#root_window" do
 			subject { model.root_window }
 
-			it { should == Application::Window.new(nil, { title: "the app" }) }
+			it { should == Application::Window.new("the app") }
 		end
 
 		describe "#textbox" do
