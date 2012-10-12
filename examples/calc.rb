@@ -2,7 +2,7 @@
 
 class Calc < Ayatsuri::Application
 	ayatsuri_for "calc.exe", "電卓" do
-		textbox "result", id: 99
+		label "result", id: 99
 		button "1", id: 1
 		button "2", id: 2
 		button "3", id: 3
@@ -25,6 +25,6 @@ class Calc < Ayatsuri::Application
 			button(value).click
 		end
 		button("=").click
-		textbox("result").text.to_i
+		label("result").text.to_i
 	end
 end

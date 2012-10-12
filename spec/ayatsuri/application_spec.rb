@@ -2,34 +2,54 @@ require 'spec_helper'
 
 class App < Ayatsuri::Application
 	ayatsuri_for "app.exe", "the app" do
-		textbox "textbox1", id: 1
+		label "label1", id: 1
+		button "button1", id: 2
+		window "sub1", "subwindow 1" do
+			button "button2", id: 3
+		end
 	end
 end
 
 module Ayatsuri
-	describe Application do
-		let(:model) { App.new }
+	describe App do
+		let(:app_class) { described_class }
+		let(:model) { app_class.new }
 
-		describe "#exe" do
-			subject { model.exe }
-
-			it { should == "app.exe" }
+		describe "#driver" do
+			subject { model.driver }
+			it { should == AutoIt::Driver.create("app.exe") }
 		end
 
 		describe "#root_window" do
 			subject { model.root_window }
 
-			it { should == Application::Window.new("the app") }
+			it { should == Application::Window.new(model.driver, "the app") }
 		end
 
-		describe "#textbox" do
-			subject { model.textbox name }
+		describe "#window" do
+			subject { model.window "sub1" }
 
-			let(:name) { "textbox1" }
+			it { should == Application::Window.new(model.driver, "subwindow 1") }
+		end
+
+		describe "#label" do
+			subject { model.label name }
+
+			let(:name) { "label1" }
 			let(:id_spec) { { id: 1 } }
 
-			context "given defined textbox name" do
-				it { should == Application::Control.new(name, id_spec, "main") }
+			context "given defined label name" do
+				it { should == Application::Control.new(:label, model.root_window, id_spec) }
+			end
+		end
+
+		describe "#button" do
+			subject { model.button name }
+			let(:name) { "button1" }
+			let(:id_spec) { { id: 2 } }
+
+			context "given defined button name" do
+				it { should == Application::Control.new(:button, model.root_window, id_spec) }
 			end
 		end
 	end

@@ -1,1 +1,1 @@
-require 'ayatsuri/autoit/identification'
+require 'ayatsuri/autoit/identity'
