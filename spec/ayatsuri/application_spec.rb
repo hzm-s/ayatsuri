@@ -17,7 +17,7 @@ module Ayatsuri
 
 		describe "#driver" do
 			subject { model.driver }
-			it { should == AutoIt::Driver.create("app.exe") }
+			it { should == Driver.create("app.exe") }
 		end
 
 		describe "#root_window" do

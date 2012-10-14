@@ -7,8 +7,12 @@ module Ayatsuri
 		class << self
 			attr_reader :created_drivers
 
-			def create(exe, automation_engine=AutoIt)
+			def create(exe, automation_engine="Autoit")
 				created_drivers[exe] ||= create_driver(exe, automation_engine)
+			end
+
+			def flush
+				@created_drivers = {}
 			end
 
 		private
@@ -22,7 +26,11 @@ module Ayatsuri
 			end
 		end
 
+		attr_reader :automation_engine_interface
+
 		def initialize(exe, automation_engine)
+			@exe = exe
+			@automation_engine_interface = automation_engine.create_interface
 			extend automation_engine
 		end
 

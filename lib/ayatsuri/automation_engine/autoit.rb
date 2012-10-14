@@ -1,6 +1,6 @@
 module Ayatsuri
 	module AutomationEngine
-		module AutoIt
+		module Autoit
 		end
 	end
 end

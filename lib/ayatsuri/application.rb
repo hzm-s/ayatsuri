@@ -17,7 +17,7 @@ module Ayatsuri
 			end
 
 			def ayatsuri_for(exe, root_window_title, &bilding_block)
-				@driver = AutoIt::Driver.create(exe)
+				@driver = Driver.create(exe)
 				@root_window = Window.new(@driver, root_window_title).build(&bilding_block)
 			end
 		end

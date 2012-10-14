@@ -14,18 +14,29 @@ module Ayatsuri
 		let(:exe) { "application.exe" }
 		let(:engine) { Ayatsuri }
 
-		before do
-			engine.stub(:interface).and_return(engine_interface)
-		end
+		let(:engine_interface) { double 'automation engine interface' }
 
-		let(:engine_interface) { mock 'automation engine interface' }
+		before { engine.stub(:create_interface).and_return(engine_interface) }
+
+		after { described_class.flush }
 
 		describe ".create" do
-			subject { described_class.create exe, engine }
+			subject { model }
 
-			it { should == described_class.create(exe, engine) }
-			it { should be_kind_of(engine) }
-			it { should_not == described_class.create("otherapp.exe", engine) }
+			it "creates interface of given engine and extends engine" do
+				engine.should_receive(:create_interface)
+				subject.should be_kind_of(engine)
+			end
+
+			context "when create twice" do
+				context "when create again" do
+					it { subject.should == described_class.create(exe, engine) }
+				end
+
+				context "when create other exe" do
+					it { subject.should_not == described_class.create("other.exe", engine) }
+				end
+			end
 		end
 
 		describe ".new" do
@@ -40,7 +51,7 @@ module Ayatsuri
 			let(:args) { mock 'args' }
 
 			it "delegate given method and args to automation engine interface" do
-				engine_interface.should_receive(method).with(args)
+				engine_interface.should_receive(:send).with(method, args)
 				subject
 			end
 		end
