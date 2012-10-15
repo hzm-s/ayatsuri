@@ -1,6 +1,3 @@
-require 'ayatsuri/application/window/builder'
-require 'ayatsuri/application/window/component_manager'
-
 module Ayatsuri
 	class Application
 		

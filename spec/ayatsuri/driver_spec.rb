@@ -1,11 +1,6 @@
 require 'spec_helper'
 
-module Ayatruri
-	module AutomationEngine
-		module Ayatsuri
-		end
-	end
-end
+module Ayatruri; module AutomationEngine; module Ayatsuri; end; end; end
 
 module Ayatsuri
 	describe Driver do
@@ -14,9 +9,11 @@ module Ayatsuri
 		let(:exe) { "application.exe" }
 		let(:engine) { Ayatsuri }
 
-		let(:engine_interface) { double 'automation engine interface' }
+		before do
+			engine.stub(:create_interface).and_return(engine_interface)
+		end
 
-		before { engine.stub(:create_interface).and_return(engine_interface) }
+		let(:engine_interface) { double 'automation engine interface' }
 
 		after { described_class.flush }
 
