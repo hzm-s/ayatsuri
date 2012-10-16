@@ -1,15 +1,13 @@
 require 'spec_helper'
 
+class App < Ayatsuri::Application; end
+
 module Ayatsuri
 	describe Application do
-		let(:mod) { described_class }
-
-		before do
-			mod.initialize_application
-		end
+		let(:app) { App }
 
 		describe ".ayatsuri_for" do
-			subject { mod.ayatsuri_for exe, root_window_id, &build_block }
+			subject { app.ayatsuri_for exe, root_window_id, &build_block }
 
 			let(:exe) { "app.exe" }
 			let(:root_window_id) { mock 'root window identity' }
@@ -19,82 +17,67 @@ module Ayatsuri
 			let(:builder) { mock 'builder' }
 			let(:root_window) { mock 'root window' }
 
-			it "creates driver for exe and build components" do
-				Driver.should_receive(:create).with(exe).and_return(driver)
-				Application::ComponentBuilder.should_receive(:new).
-					with(driver, mod).and_return(builder)
-				builder.should_receive(:window).
-					with("root", root_window_id, &build_block).and_return(root_window)
-				subject.should == root_window
+			before do
+				Driver.should_receive(:create).with("autoit", exe).and_return(driver)
+				Component::Builder.should_receive(:new).
+					with(driver, app).and_return(builder)
+				builder.stub(:window) {|name, id, &block| app.append_child(name, root_window) }
+			end
+
+			it "setup application" do
+				subject
+				app.root_window.should == root_window
+				app.driver.should == driver
 			end
 		end
 
 		describe ".append_child" do
-			subject { mod.append_child name, child }
+			subject { app.append_child name, child }
 
 			let(:name) { mock 'name' }
 			let(:child) { mock 'root window' }
 
-			it "register given child to component repository" do
-				Application::ComponentRepository.any_instance.
-					should_receive(:register).with(name, child)
-				subject
-			end
-		end
-	end
-end
-
-__END__
-class App < Ayatsuri::Application
-	ayatsuri_for "app.exe", "the app" do
-		label "label1", id: 1
-		button "button1", id: 2
-		window "sub1", "subwindow 1" do
-			button "button2", id: 3
-		end
-	end
-end
-
-module Ayatsuri
-	describe App do
-		let(:app_class) { described_class }
-		let(:model) { app_class.new }
-
-		describe "#driver" do
-			subject { model.driver }
-			it { should == Driver.create("app.exe") }
-		end
-
-		describe "#root_window" do
-			subject { model.root_window }
-
-			it { should == Application::Window.new(model.driver, "the app") }
-		end
-
-		describe "#window" do
-			subject { model.window "sub1" }
-
-			it { should == Application::Window.new(model.driver, "subwindow 1") }
-		end
-
-		describe "#label" do
-			subject { model.label name }
-
-			let(:name) { "label1" }
-			let(:id_spec) { { id: 1 } }
-
-			context "given defined label name" do
-				it { should == Application::Control.new(:label, model.root_window, id_spec) }
+			it "appends given child component" do
+				subject.should == child
+				app.root_window.should == child
 			end
 		end
 
-		describe "#button" do
-			subject { model.button name }
-			let(:name) { "button1" }
-			let(:id_spec) { { id: 2 } }
+		context "when constructed application" do
+			let(:model) { app.new }
 
-			context "given defined button name" do
-				it { should == Application::Control.new(:button, model.root_window, id_spec) }
+			describe "#boot" do
+				subject { model.boot }
+
+				let(:driver) { mock 'automation driver' }
+
+				it "calls boot to driver" do
+					app.should_receive(:driver).and_return(driver)
+					driver.should_receive(:boot)
+					subject
+				end
+			end
+
+			describe "accessing child components" do
+				subject { model.send(component_type, name) } 
+
+				let(:component_type) { :component }
+				let(:name) { "component name" }
+
+				context "when available component" do
+					before do
+						Component.should_receive(:available_type?).with(component_type).and_return(true)
+					end
+
+					let(:root_window) { mock 'root window' }
+					let(:child) { mock 'child component' }
+
+					it "fetches child component from root window" do
+						app.should_receive(:root_window).and_return(root_window)
+						root_window.should_receive(:find_child).with(component_type, name).and_return(child)
+						subject.should == child
+					end
+				end
 			end
 		end
 	end

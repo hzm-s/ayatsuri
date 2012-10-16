@@ -21,10 +21,12 @@ class Calc < Ayatsuri::Application
 	end
 
 	def calculate(expression)
-		expression.split(/\s+/).each do |value|
-			button(value).click
+		boot do
+			expression.split(/\s+/).each do |value|
+				button(value).click
+			end
+			button("=").click
+			label("result").text.to_i
 		end
-		button("=").click
-		label("result").text.to_i
 	end
 end
