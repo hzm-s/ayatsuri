@@ -1,1 +1,2 @@
-require 'ayatsuri/application'
+require 'ayatsuri/base'
+require 'ayatsuri/errors'

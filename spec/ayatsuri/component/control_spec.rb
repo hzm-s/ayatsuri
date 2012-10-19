@@ -24,11 +24,36 @@ module Ayatsuri
 				it { should == type }
 			end
 
+			describe "#identifier" do
+				subject { model.identifier }
+				it { should == id }
+			end
+
+			describe "#parent" do
+			end
+
+			describe "#parent_identifier" do
+				subject { model.parent_identifier }
+				
+				before { parent.should_receive(:identifier) { parent_id } }
+				let(:parent_id) { mock 'parent identifier' }
+				it { should == parent_id }
+			end
+
 			describe "#click" do
 				subject { model.click }
 
-				it "calls click to driver" do
+				it "activate parent and calls click to driver" do
 					driver.should_receive(:click).with(model)
+					subject
+				end
+			end
+
+			describe "#content" do
+				subject { model.content }
+
+				it "calls get_content to driver" do
+					driver.should_receive(:get_content).with(model)
 					subject
 				end
 			end

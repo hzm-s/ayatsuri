@@ -3,6 +3,67 @@ require 'spec_helper'
 module Ayatsuri
 	module Component
 		describe Builder do
+			let(:model) { described_class.new component }
+
+			let(:component) { mock 'component' }
+
+			describe "#build" do
+				subject { model.build &block }
+
+				let(:block) { Proc.new { "block for build child components" } }
+
+				before do
+					model.stub(:instance_exec).with(&block).and_return(built_component)
+				end
+
+				let(:built_component) { mock 'component that is built child components' }
+
+				it { should == built_component }
+			end
+
+			describe "build child component" do
+				subject { model.send(component_type, name, id) }
+
+				let(:component_type) { :anything }
+				let(:name) { "component name" }
+				let(:id) { "component id" }
+
+				before { model.stub(:parent).and_return(parent_component) }
+
+				let(:parent_component) do
+					double('parent component').tap do |d|
+						d.stub(:driver).and_return(driver)
+						d.stub(:append_child).with(name, child_component).and_return(d)
+						d.stub(:find_child).with(name).and_return(child_component)
+					end
+				end
+
+				let(:driver) { mock 'driver' }
+				let(:child_component) { mock 'child component' }
+
+				context "given available component type" do
+					before do
+						Component.stub(:create).with(component_type, driver, id).
+							and_return(child_component)
+					end
+
+					it { subject.find_child(name).should == child_component }
+				end
+
+				context "given unavailable component type" do
+					before do
+						Component.stub(:create).and_raise(ex)
+					end
+
+					let(:ex) { UnavailableComponentType }
+
+					it { expect { subject }.to raise_error(ex) }
+				end
+			end
+		end
+	end
+end
+__END__
 			let(:model) { described_class.new driver, parent }
 
 			let(:driver) { mock 'automation driver' }

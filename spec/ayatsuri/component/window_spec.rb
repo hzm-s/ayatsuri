@@ -6,12 +6,15 @@ module Ayatsuri
 			let(:model) { described_class.new driver, id }
 
 			let(:driver) { mock 'automation driver' }
-			let(:id) { "window identifier for automation engine" }
+			let(:id) { "window identifier for adapter" }
 
 			describe ".create" do
-				subject { described_class.create driver, id }
+				subject { described_class.create driver, id_spec }
+
+				let(:id_spec) { mock "id spec" }
 
 				it "calls new to self" do
+					driver.should_receive(:create_window_identifier).with(id_spec).and_return(id)
 					described_class.should_receive(:new).with(driver, id)
 					subject
 				end
@@ -20,6 +23,11 @@ module Ayatsuri
 			describe "#component_type" do
 				subject { model.component_type }
 				it { should == :window }
+			end
+
+			describe "#identifier" do
+				subject { model.identifier }
+				it { should == id }
 			end
 
 			describe "#append_child" do
@@ -45,6 +53,15 @@ module Ayatsuri
 					Repository.any_instance.should_receive(:fetch).with(component_type, name).
 						and_return(child)
 					subject.should == child
+				end
+			end
+
+			describe "#activate" do
+				subject { model.activate }
+
+				it "calls activate to driver" do
+					driver.should_receive(:activate).with(model)
+					subject
 				end
 			end
 		end

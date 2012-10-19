@@ -7,8 +7,8 @@ module Ayatsuri
 		class << self
 			attr_reader :created_drivers
 
-			def create(automation_adapter_name, exe)
-				created_drivers[exe] ||= create_driver(automation_adapter_name, exe)
+			def create(automation_adapter_name)
+				created_drivers[automation_adapter_name] ||= create_driver(automation_adapter_name)
 			end
 
 			def flush
@@ -17,18 +17,24 @@ module Ayatsuri
 
 		private
 
-			def create_driver(automation_adapter_name, exe)
-				new(automation_adapter_module(automation_adapter_name), exe)
+			def create_driver(automation_adapter_name)
+				new(automation_adapter_class(automation_adapter_name))
 			end
 
-			def automation_adapter_module(adapter_name)
-				Ayatsuri::AutomationAdapter.const_get(adapter_name.capitalize.to_sym)
+			def automation_adapter_class(name)
+				Ayatsuri::AutomationAdapter.const_get(name.capitalize.to_sym)
 			end
 		end
 
-		def initialize(automation_adapter_module, exe)
-			@exe = exe
-			extend automation_adapter_module
+		attr_reader :adapter
+
+		def initialize(automation_adapter_class)
+			@adapter = automation_adapter_class.new
+		end
+
+		def method_missing(method, *args, &block)
+			raise OperationNotImplement.new(adapter.class, method) unless adapter.respond_to?(method)
+			adapter.send(method, *args, &block)
 		end
 
 		private_class_method :new

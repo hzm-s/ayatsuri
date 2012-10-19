@@ -1,16 +1,15 @@
 module Ayatsuri
 	module Component
-		
 		class Window
 
 			class << self
 
 				def create(driver, identifier)
-					new(driver, identifier)
+					new(driver, driver.create_window_identifier(identifier))
 				end
 			end
 
-			attr_reader :driver, :title
+			attr_reader :driver, :identifier
 
 			def initialize(driver, identifier)
 				@driver, @identifier = driver, identifier
@@ -27,6 +26,10 @@ module Ayatsuri
 
 			def component_type
 				:window
+			end
+
+			def activate
+				@driver.activate(self)
 			end
 		end
 	end

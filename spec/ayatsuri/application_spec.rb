@@ -1,24 +1,70 @@
 require 'spec_helper'
 
-class App < Ayatsuri::Application; end
-
 module Ayatsuri
 	describe Application do
+		let(:model) { described_class.create adapter, app_id }
+
+		let(:adapter) { :autoit }
+		let(:app_id) { "application.exe" }
+
+		let(:driver) { mock 'driver' }
+
+		before do
+			Driver.stub(:create).with(adapter).and_return(driver)
+		end
+
+		describe ".create" do
+			subject { model }
+			it { subject.driver.should == driver }
+			it { subject.id.should == app_id }
+		end
+
+		describe "#build_root_window" do
+			subject { model.build_root_window id, &build_sub_block }
+
+			let(:id) { "window title" }
+			let(:build_sub_block) { Proc.new { "build sub component block" } }
+
+			before do
+				Component.stub(:create).with(:window, driver, id).and_return(root_window)
+			end
+
+			let(:root_window) { mock 'root window' }
+
+			context "given block to build sub components" do
+				before do
+					Component.should_receive(:build).
+						with(root_window, &build_sub_block).
+						and_return(root_window)
+				end
+
+				it { subject.root_window.should == root_window }
+			end
+
+			context "NOT given block" do
+				let(:build_sub_block) { nil }
+				it { subject.root_window.should == root_window }
+			end
+		end
+	end
+end
+__END__
 		let(:app) { App }
 
-		describe ".ayatsuri_for" do
-			subject { app.ayatsuri_for exe, root_window_id, &build_block }
+		let(:driver) { mock 'automation driver' }
+		let(:application) { "app.exe" }
+		let(:root_window) { mock 'root window' }
 
-			let(:exe) { "app.exe" }
+		describe ".ayatsuri_for" do
+			subject { app.ayatsuri_for application, root_window_id, &build_block }
+
 			let(:root_window_id) { mock 'root window identity' }
 			let(:build_block) { Proc.new { "build block" } }
 
-			let(:driver) { mock 'automation driver' }
 			let(:builder) { mock 'builder' }
-			let(:root_window) { mock 'root window' }
 
 			before do
-				Driver.should_receive(:create).with("autoit", exe).and_return(driver)
+				Driver.should_receive(:create).with("autoit").and_return(driver)
 				Component::Builder.should_receive(:new).
 					with(driver, app).and_return(builder)
 				builder.stub(:window) {|name, id, &block| app.append_child(name, root_window) }
@@ -26,6 +72,7 @@ module Ayatsuri
 
 			it "setup application" do
 				subject
+				app.application.should == application
 				app.root_window.should == root_window
 				app.driver.should == driver
 			end
@@ -46,20 +93,50 @@ module Ayatsuri
 		context "when constructed application" do
 			let(:model) { app.new }
 
-			describe "#boot" do
-				subject { model.boot }
+			before do
+				app.tap do |klass|
+					klass.stub(:application).and_return(application)
+					klass.stub(:driver).and_return(driver)
+					klass.stub(:root_window).and_return(root_window)
+				end
+			end
 
-				let(:driver) { mock 'automation driver' }
+			describe "#boot!" do
+				subject { model.boot! &block }
 
-				it "calls boot to driver" do
-					app.should_receive(:driver).and_return(driver)
-					driver.should_receive(:boot)
-					subject
+				let(:block) { Proc.new { "operate block" } }
+
+				let(:stub_boot) { driver.should_receive(:boot!).with(application) }
+
+				context "when successful" do
+					before { stub_boot.and_return(true) }
+
+					context "when block given" do
+						it "boots application and execute given block and shutdown application when finished" do
+							model.should_receive(:instance_exec).with(&block)
+							driver.should_receive(:shutdown!).with(root_window)
+							subject
+						end
+					end
+
+					context "when NOT block given" do
+						let(:block) { nil }
+
+						it "just boots application" do
+							model.boot!
+						end
+					end
+				end
+
+				context "when failed" do
+					let(:error) { FailedToBootApplication }
+					before { stub_boot.and_raise(error) }
+					it { expect { model.boot! }.to raise_error(error) }
 				end
 			end
 
 			describe "accessing child components" do
-				subject { model.send(component_type, name) } 
+				subject { model.send(component_type, name) }
 
 				let(:component_type) { :component }
 				let(:name) { "component name" }
