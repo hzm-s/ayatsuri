@@ -4,14 +4,20 @@ require 'ayatsuri/component/base'
 module Ayatsuri
 	module Component
 		describe Base do
-			let(:model) { described_class.new driver, id }
+			let(:model) { described_class.new driver, parent, id }
 
 			let(:driver) { mock 'driver' }
+			let(:parent) { mock 'parent component' }
 			let(:id) { mock 'component id' }
 
 			describe "#driver" do
 				subject { model.driver }
 				it { should == driver }
+			end
+
+			describe "#parent" do
+				subject { model.parent }
+				it { should == parent }
 			end
 
 			describe "#id" do

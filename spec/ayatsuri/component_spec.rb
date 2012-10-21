@@ -5,16 +5,17 @@ module Ayatsuri
 		let(:mod) { described_class }
 
 		describe ".create" do
-			subject { mod.create type, driver, id }
+			subject { mod.create type, driver, parent, id }
 
 			let(:type) { :anything }
 			let(:driver) { mock 'driver' }
+			let(:parent) { mock 'parent component' }
 			let(:id) { "component id" }
 
 			context "given available component type" do
 				before do
 					stub_const("Ayatsuri::Component::Anything", Class.new)
-					Component::Anything.stub(:new).with(driver, id)
+					Component::Anything.stub(:new).with(driver, parent, id)
 						.and_return(component)
 				end
 
@@ -29,15 +30,15 @@ module Ayatsuri
 		end
 
 		describe ".build" do
-			subject { mod.build component, &build_block }
+			subject { mod.build component, &create_child_block }
 
 			let(:component) { mock 'component for build' }
-			let(:build_block) { Proc.new { "build block" } }
+			let(:create_child_block) { Proc.new { "create child block" } }
 
 			before do
 				Component::Builder.stub(:new).with(component).
 					and_return(builder)
-				builder.stub(:build).with(&build_block).
+				builder.stub(:build).with(&create_child_block).
 					and_return(built_component)
 			end
 

@@ -10,18 +10,18 @@ module Ayatsuri
 			describe "#build" do
 				subject { model.build &block }
 
-				let(:block) { Proc.new { "block for build child components" } }
+				let(:block) { Proc.new { "block for create child components" } }
 
 				before do
 					model.stub(:instance_exec).with(&block).and_return(built_component)
 				end
 
-				let(:built_component) { mock 'component that is built child components' }
+				let(:built_component) { mock 'component that is create child components' }
 
 				it { should == built_component }
 			end
 
-			describe "build child component" do
+			describe "create child component" do
 				subject { model.send(component_type, name, id) }
 
 				let(:component_type) { :anything }
@@ -43,7 +43,8 @@ module Ayatsuri
 
 				context "given available component type" do
 					before do
-						Component.stub(:create).with(component_type, driver, id).
+						Component.stub(:create).
+							with(component_type, driver, parent_component, id).
 							and_return(child_component)
 					end
 

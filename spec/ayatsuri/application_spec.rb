@@ -19,22 +19,22 @@ module Ayatsuri
 			it { subject.id.should == app_id }
 		end
 
-		describe "#build_root_window" do
-			subject { model.build_root_window id, &build_sub_block }
+		describe "#create_root_window" do
+			subject { model.create_root_window id, &create_child_block }
 
 			let(:id) { "window title" }
-			let(:build_sub_block) { Proc.new { "build sub component block" } }
+			let(:create_child_block) { Proc.new { "create child component block" } }
 
 			before do
-				Component.stub(:create).with(:window, driver, id).and_return(root_window)
+				Component.stub(:create).with(:window, driver, nil, id).and_return(root_window)
 			end
 
 			let(:root_window) { mock 'root window' }
 
-			context "given block to build sub components" do
+			context "given block for create child components" do
 				before do
 					Component.should_receive(:build).
-						with(root_window, &build_sub_block).
+						with(root_window, &create_child_block).
 						and_return(root_window)
 				end
 
@@ -42,7 +42,7 @@ module Ayatsuri
 			end
 
 			context "NOT given block" do
-				let(:build_sub_block) { nil }
+				let(:create_child_block) { nil }
 				it { subject.root_window.should == root_window }
 			end
 		end

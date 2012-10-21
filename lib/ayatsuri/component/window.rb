@@ -1,6 +1,14 @@
+require 'ayatsuri/component/base'
+
 module Ayatsuri
 	module Component
-		class Window
+		class Window < Base
+			include Behavior::Containable
+
+		end
+	end
+end
+__END__
 
 			class << self
 

@@ -3,6 +3,22 @@ require 'spec_helper'
 module Ayatsuri
 	module Component
 		describe Window do
+			let(:model) { described_class.new driver, parent, id }
+
+			let(:driver) { mock 'driver' }
+			let(:parent) { mock 'parent component' }
+			let(:id) { mock 'window id' }
+
+			describe ".new" do
+				subject { model }
+
+				it { subject.should be_kind_of(Base) }
+				it { subject.should be_kind_of(Behavior::Containable) }
+			end
+		end
+	end
+end
+__END__
 			let(:model) { described_class.new driver, id }
 
 			let(:driver) { mock 'automation driver' }

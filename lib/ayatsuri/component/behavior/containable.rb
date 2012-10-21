@@ -3,16 +3,17 @@ module Ayatsuri
 		module Behavior
 			module Containable
 
-				class << self
-					def included(base)
-						base.send :alias_method, :initialize_without_containable, :initialize
-						base.send :alias_method, :initialize, :initialize_with_containable
-						base.attr_reader :child_repository
-					end
+				def child_repository
+					@child_repository ||= Repository.new
 				end
 
-				def initialize_with_containable
-					@child_repository = Repository.new
+				def append_child(name, child)
+					child_repository.register(name, child)
+					self
+				end
+
+				def find_child(component_type, name)
+					child_repository.fetch(component_type, name)
 				end
 			end
 		end

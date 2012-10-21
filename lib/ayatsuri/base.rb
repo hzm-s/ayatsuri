@@ -8,9 +8,9 @@ module Ayatsuri
 		class << self
 			attr_reader :application
 
-			def ayatsuri_for(application_id, root_window_id, &build_block)
+			def ayatsuri_for(application_id, root_window_id, &create_component_block)
 				@application = Application.create(:autoit, application_id)
-				@application.build_root_window(root_window_id, &build_block)
+				@application.create_root_window(root_window_id, &create_component_block)
 				self
 			end
 		end

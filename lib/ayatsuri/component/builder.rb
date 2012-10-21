@@ -11,12 +11,12 @@ module Ayatsuri
 				@parent = parent
 			end
 
-			def build(&build_child_components_block)
-				self.instance_exec(&build_child_components_block)
+			def build(&create_child_block)
+				self.instance_exec(&create_child_block)
 			end
 
 			def method_missing(method, *args, &block)
-				parent.append_child(args[0], child_component(method, args[1]))
+				parent.append_child(args[0], create_child_component(method, args[1]))
 			rescue UnavailableComponentType
 				raise $!
 			rescue => exception
@@ -25,8 +25,8 @@ module Ayatsuri
 
 		private
 
-			def child_component(type, id)
-				Component.create(type, self.parent.driver, id)
+			def create_child_component(type, id)
+				Component.create(type, parent.driver, parent, id)
 			end
 		end
 	end

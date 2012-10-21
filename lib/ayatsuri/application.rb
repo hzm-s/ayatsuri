@@ -14,10 +14,10 @@ module Ayatsuri
 			@driver, @id = driver, id
 		end
 
-		def build_root_window(id, &build_child_components_block)
-			Component.create(:window, driver, id).tap do |root_window|
-				if build_child_components_block
-					@root_window = Component.build(root_window, &build_child_components_block)
+		def create_root_window(id, &create_child_block)
+			Component.create(:window, driver, nil, id).tap do |root_window|
+				if create_child_block
+					@root_window = Component.build(root_window, &create_child_block)
 				else
 					@root_window = root_window
 				end

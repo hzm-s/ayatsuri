@@ -5,14 +5,14 @@ module Ayatsuri
 
 		extend self
 
-		def create(type, driver, id)
-			component_class(type).new(driver, id)
+		def create(type, driver, parent, id)
+			component_class(type).new(driver, parent, id)
 		rescue NameError
 			raise UnavailableComponentType.new(type)
 		end
 
-		def build(component, &build_child_components_block)
-			Builder.new(component).build(&build_child_components_block)
+		def build(component, &create_child_block)
+			Builder.new(component).build(&create_child_block)
 		end
 
 	private
