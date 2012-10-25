@@ -32,13 +32,13 @@ module Ayatsuri
 				end
 			end
 
-			describe "#boot!" do
-				subject { model.boot! application }
+			describe "#run" do
+				subject { model.run exe_path }
 				
-				let(:application) { mock 'application' }
+				let(:exe_path) { 'C:\Program Files\application.exe' }
 
 				it "calls Run to com" do
-					com.should_receive(:Run).with(application)
+					com.should_receive(:Run).with(exe_path)
 					subject
 				end
 			end

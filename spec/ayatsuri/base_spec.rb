@@ -3,35 +3,64 @@ require 'spec_helper'
 module Ayatsuri
 	describe Base do
 		let(:klass) { described_class }
-		
-		describe ".ayatsuri_for" do
-			subject { klass.ayatsuri_for app_id, root_window_id, &create_component_block }
 
-			let(:app_id) { "application.exe" }
-			let(:root_window_id) { "root window identifier" }
-			let(:create_component_block) { Proc.new { "create components block" } }
+		before do
+			Class.new.tap do |fake|
+				stub_const("Ayatsuri::Driver", fake)
+				stub_const("Ayatsuri::Operator", fake)
+				stub_const("Ayatsuri::Operation::Plan", fake)
+			end
+		end
+
+		describe ".ayatsuri_for" do
+			subject { klass.ayatsuri_for automation_adapter, exe_path }
+
+			let(:automation_adapter) { :autoit }
+			let(:exe_path) { 'C:\Program Files\app.exe' }
 
 			before do
-				Application.should_receive(:create).with(:autoit, app_id) { application }
+				Driver.stub(:create).with(automation_adapter) { driver }
+				Application.stub(:new).with(exe_path) { application }
 			end
 
+			let(:driver) { mock 'ayatsuri driver' }
 			let(:application) { mock 'application' }
-			let(:stub_create_root_window) { application.should_receive(:create_root_window) }
 
-			context "given block" do
-				it "builds root window and its sub components" do
-					stub_create_root_window.with(root_window_id, &create_component_block).and_return(nil)
-					subject.application.should == application
-				end
+			it { subject.driver.should == driver }
+			it { subject.application.should == application }
+		end
+
+		context "when constructed" do
+			let(:model) { klass.new }
+
+			before do
+				klass.stub(:driver).and_return(driver)
+				klass.stub(:application).and_return(application)
+				Operator.stub(:new).with(driver, application).and_return(operator)
 			end
 
-			context "NOT given block" do
-				let(:create_component_block) { nil }
+			let(:driver) { mock 'driver' }
+			let(:application) { mock 'application' }
+			let(:operator) { mock 'operator' }
 
-				it "builds root window only" do
-					stub_create_root_window.with(root_window_id).and_return(nil)
-					subject.application.should == application
+			describe ".new" do
+				subject { model }
+				it { subject.operator.should == operator }
+			end
+
+			describe "#operate" do
+				subject { model.operate &plan_block }
+
+				let(:plan_block) { lambda { "plan block" } }
+
+				before do
+					Operation::Plan.stub(:create).with(&plan_block).and_return(plan)
+					operator.stub(:perform).with(plan).and_return(true)
 				end
+
+				let(:plan) { mock 'operate plan' }
+
+				it { should be_true }
 			end
 		end
 	end

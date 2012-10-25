@@ -2,21 +2,52 @@ require 'spec_helper'
 
 module Ayatsuri
 	describe Application do
-		let(:model) { described_class.create adapter, app_id }
+		let(:model) { described_class.new exe_path }
 
-		let(:adapter) { :autoit }
-		let(:app_id) { "application.exe" }
+		let(:exe_path) { "application.exe" }
 
-		let(:driver) { mock 'driver' }
+		let(:operator) { mock 'operator' }
 
-		before do
-			Driver.stub(:create).with(adapter).and_return(driver)
+		describe "#running?" do
+			subject { model.running? }
+
+			context "when running" do
+				before do
+					model.run(operator.tap {|o| o.stub(:run) })
+				end
+				it { should be_true }
+			end
+
+			context "when NOT running" do
+				it { should be_false }
+			end
 		end
 
-		describe ".create" do
-			subject { model }
-			it { subject.driver.should == driver }
-			it { subject.id.should == app_id }
+		describe "application command" do
+			describe "#run" do
+				subject { model.run operator }
+
+				before { operator.stub(:run).with(model) }
+
+				it { subject; model.running?.should be_true }
+			end
+
+			describe "#quit" do
+				subject { model.quit operator }
+
+				before { model.stub(:running?).and_return(running) }
+
+				context "when application is running" do
+					let(:running) { true }
+					before { operator.stub(:quit).with(model) { exe_path } }
+					it { should == exe_path }
+				end
+
+				context "when application has NOT ran" do
+					let(:running) { false }
+					it { should be_nil }
+				end
+			end
 		end
 
 		describe "#create_root_window" do
@@ -26,7 +57,7 @@ module Ayatsuri
 			let(:create_child_block) { Proc.new { "create child component block" } }
 
 			before do
-				Component.stub(:create).with(:window, driver, nil, id).and_return(root_window)
+				Component.stub(:create).with(:window, nil, id).and_return(root_window)
 			end
 
 			let(:root_window) { mock 'root window' }
@@ -44,117 +75,6 @@ module Ayatsuri
 			context "NOT given block" do
 				let(:create_child_block) { nil }
 				it { subject.root_window.should == root_window }
-			end
-		end
-	end
-end
-__END__
-		let(:app) { App }
-
-		let(:driver) { mock 'automation driver' }
-		let(:application) { "app.exe" }
-		let(:root_window) { mock 'root window' }
-
-		describe ".ayatsuri_for" do
-			subject { app.ayatsuri_for application, root_window_id, &build_block }
-
-			let(:root_window_id) { mock 'root window identity' }
-			let(:build_block) { Proc.new { "build block" } }
-
-			let(:builder) { mock 'builder' }
-
-			before do
-				Driver.should_receive(:create).with("autoit").and_return(driver)
-				Component::Builder.should_receive(:new).
-					with(driver, app).and_return(builder)
-				builder.stub(:window) {|name, id, &block| app.append_child(name, root_window) }
-			end
-
-			it "setup application" do
-				subject
-				app.application.should == application
-				app.root_window.should == root_window
-				app.driver.should == driver
-			end
-		end
-
-		describe ".append_child" do
-			subject { app.append_child name, child }
-
-			let(:name) { mock 'name' }
-			let(:child) { mock 'root window' }
-
-			it "appends given child component" do
-				subject.should == child
-				app.root_window.should == child
-			end
-		end
-
-		context "when constructed application" do
-			let(:model) { app.new }
-
-			before do
-				app.tap do |klass|
-					klass.stub(:application).and_return(application)
-					klass.stub(:driver).and_return(driver)
-					klass.stub(:root_window).and_return(root_window)
-				end
-			end
-
-			describe "#boot!" do
-				subject { model.boot! &block }
-
-				let(:block) { Proc.new { "operate block" } }
-
-				let(:stub_boot) { driver.should_receive(:boot!).with(application) }
-
-				context "when successful" do
-					before { stub_boot.and_return(true) }
-
-					context "when block given" do
-						it "boots application and execute given block and shutdown application when finished" do
-							model.should_receive(:instance_exec).with(&block)
-							driver.should_receive(:shutdown!).with(root_window)
-							subject
-						end
-					end
-
-					context "when NOT block given" do
-						let(:block) { nil }
-
-						it "just boots application" do
-							model.boot!
-						end
-					end
-				end
-
-				context "when failed" do
-					let(:error) { FailedToBootApplication }
-					before { stub_boot.and_raise(error) }
-					it { expect { model.boot! }.to raise_error(error) }
-				end
-			end
-
-			describe "accessing child components" do
-				subject { model.send(component_type, name) }
-
-				let(:component_type) { :component }
-				let(:name) { "component name" }
-
-				context "when available component" do
-					before do
-						Component.should_receive(:available_type?).with(component_type).and_return(true)
-					end
-
-					let(:root_window) { mock 'root window' }
-					let(:child) { mock 'child component' }
-
-					it "fetches child component from root window" do
-						app.should_receive(:root_window).and_return(root_window)
-						root_window.should_receive(:find_child).with(component_type, name).and_return(child)
-						subject.should == child
-					end
-				end
 			end
 		end
 	end

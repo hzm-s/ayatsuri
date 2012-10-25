@@ -5,7 +5,16 @@ module Ayatsuri
 	class UnavailableComponentType < AyatsuriError
 	end
 
-	class FailedToBootApplication < AyatsuriError
+	class FailedToRunApplication < AyatsuriError
+	end
+
+	class FailedToQuitApplication < AyatsuriError
+	end
+
+	class ApplicationNotRunning < AyatsuriError
+	end
+
+	class FailedToOperate < AyatsuriError
 	end
 
 	class OperationNotImplement < AyatsuriError
@@ -18,8 +27,5 @@ module Ayatsuri
 		def message
 			"Not implemented `#{operate_method}` on #{adapter_class}"
 		end
-	end
-
-	class FailedToOperate < AyatsuriError
 	end
 end

@@ -1,21 +1,29 @@
+require 'ayatsuri/component'
+
 module Ayatsuri
 	class Application
+		attr_reader :exe_path, :running, :root_window
+		alias_method :running?, :running
 
-		class << self
-
-			def create(adapter, id)
-				new(Driver.create(adapter), id)
-			end
+		def initialize(exe_path)
+			@exe_path = exe_path
+			@running = false
 		end
 
-		attr_reader :driver, :id, :root_window
+		def run(operator)
+			operator.run(self)
+		rescue FailedToRunApplication
+		else
+			@running = true
+		end
 
-		def initialize(driver, id)
-			@driver, @id = driver, id
+		def quit(operator)
+			return nil unless self.running?
+			operator.quit(self)
 		end
 
 		def create_root_window(id, &create_child_block)
-			Component.create(:window, driver, nil, id).tap do |root_window|
+			Component.create(:window, nil, id).tap do |root_window|
 				if create_child_block
 					@root_window = Component.build(root_window, &create_child_block)
 				else
@@ -23,65 +31,6 @@ module Ayatsuri
 				end
 			end
 			self
-		end
-	end
-end
-__END__
-
-		class << self
-			attr_reader :application, :driver
-
-			RootWindow = Struct.new("RootWindow", :name, :window)
-
-			def inherited(child_class)
-				child_class.initialize_application
-				super
-			end
-
-			def initialize_application
-				self.instance_variable_set(:@application, nil)
-				self.instance_variable_set(:@driver, nil)
-				self.instance_variable_set(:@root_window, nil)
-			end
-
-			def ayatsuri_for(application, root_window_identifier, &build_block)
-				@application = application
-				@driver = Driver.create("autoit")
-				builder = Component::Builder.new(@driver, self)
-				builder.window("root", root_window_identifier, &build_block)
-				self
-			end
-
-			def root_window
-				@root_window.window
-			end
-
-			def append_child(name, child)
-				@root_window = RootWindow.new(name, child)
-				child
-			end
-		end
-
-		def boot!(&operate_block)
-			self.class.tap {|klass| klass.driver.boot!(klass.application) }
-			operate(&operate_block) if operate_block
-		rescue => exception
-			raise exception
-		end
-
-		def method_missing(method, *args, &block)
-			super unless Component.available_type?(method)
-			self.class.root_window.find_child(method, args[0])
-		end
-
-	private
-
-		def operate(&block)
-			self.instance_exec(&block)
-		rescue => exception
-			raise exception
-		ensure
-			self.class.tap {|klass| klass.driver.shutdown!(klass.root_window) }
 		end
 	end
 end

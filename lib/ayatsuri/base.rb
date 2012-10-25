@@ -1,18 +1,31 @@
-require 'ayatsuri/application'
 require 'ayatsuri/driver'
-require 'ayatsuri/component'
+require 'ayatsuri/application'
+require 'ayatsuri/operator'
+require 'ayatsuri/operation/plan'
 
 module Ayatsuri
 	class Base
 
 		class << self
-			attr_reader :application
+			attr_reader :driver, :application
 
-			def ayatsuri_for(application_id, root_window_id, &create_component_block)
-				@application = Application.create(:autoit, application_id)
-				@application.create_root_window(root_window_id, &create_component_block)
+			def ayatsuri_for(automation_adapter=:autoit, application_exe_path)
+				@driver = Driver.create(automation_adapter)
+				@application = Application.new(application_exe_path)
 				self
 			end
+		end
+
+		attr_reader :operator
+
+		def initialize
+			self.class.tap do |klass|
+				@operator = Operator.new(klass.driver, klass.application)
+			end
+		end
+
+		def operate(&plan_block)
+			operator.perform(Operation::Plan.create(&plan_block))
 		end
 	end
 end

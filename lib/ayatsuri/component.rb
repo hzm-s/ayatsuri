@@ -5,8 +5,8 @@ module Ayatsuri
 
 		extend self
 
-		def create(type, driver, parent, id)
-			component_class(type).new(driver, parent, id)
+		def create(type, parent, id)
+			component_class(type).new(parent, id)
 		rescue NameError
 			raise UnavailableComponentType.new(type)
 		end

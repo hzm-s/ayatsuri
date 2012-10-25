@@ -1,6 +1,6 @@
 #encoding:utf-8
 
-class Calc < Ayatsuri::Application
+class Calc < Ayatsuri::Base
 	ayatsuri_for "calc.exe", "電卓" do
 		label "result", 403
 		button "c", 81

@@ -1,4 +1,5 @@
 require 'spec_helper'
+__END__
 require 'calc'
 
 describe "calculate by windows calc.exe" do

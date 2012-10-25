@@ -3,14 +3,10 @@ require 'ayatsuri/component/behavior/containable'
 module Ayatsuri
 	module Component
 		class Base
-			attr_reader :driver, :parent, :id
+			attr_reader :parent, :id
 
-			def initialize(driver, parent, id)
-				@driver, @parent, @id = driver, parent, id
-			end
-
-			def invoke(operation, *args)
-				driver.send(operation, *args)
+			def initialize(parent, id)
+				@parent, @id = parent, id
 			end
 		end
 	end

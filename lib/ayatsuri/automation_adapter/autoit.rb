@@ -12,7 +12,7 @@ module Ayatsuri
 				identifier_string.encode(Encoding::Windows_31J)
 			end
 
-			def boot!(application)
+			def run(application)
 				@com.Run(application)
 			end
 
