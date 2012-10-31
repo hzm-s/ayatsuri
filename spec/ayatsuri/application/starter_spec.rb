@@ -35,7 +35,7 @@ module Ayatsuri
 					subject { model.start driver }
 
 					before do
-						driver.stub(:press_key)
+						driver.stub(:input).with(:win_r, exe_path, :enter) { true }
 					end
 
 					it { should be_true }
