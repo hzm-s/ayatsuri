@@ -8,10 +8,6 @@ module Ayatsuri
 			@driver, @application = driver, application
 		end
 
-		def invoke(method, *args)
-			@driver.send(method, *args)
-		end
-
 		def perform(plan)
 			begin
 				run_application
@@ -24,15 +20,15 @@ module Ayatsuri
 		end
 
 		def run_application
-			@application.run(self)
+			@application.run
+		end
+
+		def quit_application
+			@application.quit
 		end
 
 		def operate(plan)
 			plan.each_operation {|operation| operation.perform(self) }
-		end
-
-		def quit_application
-			@application.quit(self)
 		end
 	end
 end

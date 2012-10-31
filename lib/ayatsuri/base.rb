@@ -11,7 +11,7 @@ module Ayatsuri
 
 			def ayatsuri_for(automation_adapter=:autoit, application_exe_path)
 				@driver = Driver.create(automation_adapter)
-				@application = Application.new(application_exe_path)
+				@application = Application.new(@driver, application_exe_path)
 				self
 			end
 		end

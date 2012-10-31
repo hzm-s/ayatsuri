@@ -4,14 +4,6 @@ module Ayatsuri
 	describe Base do
 		let(:klass) { described_class }
 
-		before do
-			Class.new.tap do |fake|
-				stub_const("Ayatsuri::Driver", fake)
-				stub_const("Ayatsuri::Operator", fake)
-				stub_const("Ayatsuri::Operation::Plan", fake)
-			end
-		end
-
 		describe ".ayatsuri_for" do
 			subject { klass.ayatsuri_for automation_adapter, exe_path }
 
@@ -20,7 +12,7 @@ module Ayatsuri
 
 			before do
 				Driver.stub(:create).with(automation_adapter) { driver }
-				Application.stub(:new).with(exe_path) { application }
+				Application.stub(:new).with(driver, exe_path) { application }
 			end
 
 			let(:driver) { mock 'ayatsuri driver' }

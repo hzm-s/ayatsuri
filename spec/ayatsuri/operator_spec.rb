@@ -35,45 +35,16 @@ module Ayatsuri
 			end
 		end
 
-		describe "handle application" do
-			shared_examples "handle_application" do |method, exception|
-				let(:stub_application) { application.stub(method).with(model) }
-
-				context "when successful" do
-					before { stub_application.and_return(true) }
-					it { should be_true }
-				end
-
-				context "when fail" do
-					before { stub_application.and_raise(exception) }
-					it { expect { subject }.to raise_error(exception) }
-				end
-			end
-
-			describe "#run_application" do
-				subject { model.run_application }
-				it_behaves_like "handle_application", :run, FailedToRunApplication
-			end
-
-			describe "#quit_application" do
-				subject { model.quit_application }
-				it_behaves_like "handle_application", :quit, FailedToQuitApplication
-			end
+		describe "#run_application" do
+			subject { model.run_application }
+			before { application.stub(:run) { true } }
+			it { should be_true }
 		end
 
-		describe "#invoke" do
-			subject { model.invoke method, args }
-			
-			let(:method) { :action }
-			let(:args) { mock 'args' }
-
-			before do
-				driver.stub(method).with(args) { return_value }
-			end
-
-			let(:return_value) { mock 'return value from adapter method' }
-
-			it { should == return_value }
+		describe "#quit_application" do
+			subject { model.quit_application }
+			before { application.stub(:quit) { true } }
+			it { should be_true }
 		end
 
 		describe "#operate" do

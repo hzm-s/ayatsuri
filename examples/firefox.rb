@@ -2,7 +2,7 @@
 
 require 'ayatsuri'
 
-class Firefox < Ayatsuri::Base
+class Firefox < Ayatsuri::Application
 	ayatsuri_for 'C:\Program Files\Mozilla Firefox\firefox.exe'
 
 	def save_search_result(keyword, save_path)
@@ -12,7 +12,7 @@ class Firefox < Ayatsuri::Base
 				input(keyword).and_enter
 			end
 
-			on window_title: /検索/ do
+			on window_title: /検索$/ do
 				press_ctrl_s
 			end
 
