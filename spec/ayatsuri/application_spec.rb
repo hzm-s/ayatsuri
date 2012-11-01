@@ -2,24 +2,36 @@ require 'spec_helper'
 
 module Ayatsuri
 	describe Application do
-	end
-end
-__END__
-		let(:model) { described_class.new driver, exe_path }
+		let(:klass) { described_class }
 
-		let(:driver) { mock 'driver' }
-		let(:exe_path) { "application.exe" }
+		describe ".ayatsuri_for" do
+			subject { klass.ayatsuri_for exe_path, starter_name }
 
-		describe "#run" do
-			subject { model.run active_window }
+			let(:exe_path) { 'C:\Program Files\app.exe' }
+			let(:starter_name) { :clickonce }
 
 			before do
-				ActiveWindow.stub(:add_observer).with(model)
-				driver.stub(:run).with(exe_path) { true }
-				window_title_updator.stub(:continue)
+				Application::Starter.stub(:create).with(exe_path, starter_name) { starter }
 			end
 
-			it { should be_true }
+			let(:starter) { mock 'application starter' }
+
+			it { subject; klass.starter.should == starter }
+		end
+
+		describe ".operation_index" do
+			subject { klass.define_operation_index FakeOperation, &index_block }
+
+			let(:index_block) { lambda { "define operation index" } }
+
+			before do
+				stub_const("FakeOperation", Class.new)
+				Operation::Index.stub(:build).with(&index_block).and_return(operation_index)
+			end
+
+			let(:operation_index) { mock 'operation index' }
+
+			it { subject; klass.operation_index.should == operation_index }
 		end
 	end
 end

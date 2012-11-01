@@ -9,8 +9,8 @@ module Ayatsuri
 		class << self
 			attr_reader :driver, :application
 
-			def ayatsuri_for(automation_adapter=:autoit, application_exe_path)
-				@driver = Driver.create(automation_adapter)
+			def ayatsuri_for(application_exe_path)
+				@driver = Driver.instance
 				@application = Application.new(@driver, application_exe_path)
 				self
 			end

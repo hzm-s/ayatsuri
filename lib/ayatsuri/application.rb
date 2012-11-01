@@ -1,30 +1,19 @@
 require 'ayatsuri/application/starter'
-require 'ayatsuri/application/window_manager'
-require 'ayatsuri/component'
+require 'ayatsuri/operation/index'
 
 module Ayatsuri
 	class Application
-		attr_reader :driver, :exe_path, :window_manager
 
-		attr_reader :running
-		alias_method :running?, :running
+		class << self
+			attr_reader :starter, :operation_index
 
-		def initialize(driver, exe_path)
-			@driver, @exe_path = driver, exe_path
-			@window_manager = WindowManager.new
-			@running = false
-		end
+			def ayatsuri_for(exe_path, starter_name=:default)
+				@starter = Starter.create(exe_path, starter_name)
+			end
 
-		def run
-			@driver.run(@exe_path)
-		rescue FailedToRunApplication
-		else
-			@running = true
-		end
-
-		def quit
-			return nil unless self.running?
-			@driver.close_window
+			def define_operation_index(operation_class, &index_block)
+				@operation_index = Operation::Index.build(&index_block)
+			end
 		end
 	end
 end

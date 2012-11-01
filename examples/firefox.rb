@@ -2,26 +2,45 @@
 
 require 'ayatsuri'
 
+class SaveSearchResult < Ayatsuri::Operation
+
+	def skip_setup
+		"skip"
+	end
+
+	def input_keyword
+		press("^k").
+		input(params[:keyword])
+		press("{ENTER}")
+	end
+
+	def invoke_save
+		press("!s")
+	end
+
+	def save_file
+		input(save_path)
+		press("{TAB}{DOWN 2}{ENTER}")
+	end
+
+	def quit
+		quit_application
+	end
+end
+
 class Firefox < Ayatsuri::Application
 	ayatsuri_for 'C:\Program Files\Mozilla Firefox\firefox.exe'
 
+	define_operation_index SaveSearchResult do
+		window_title /Setup/,		:skip_setup, :optional
+		window_title /Firefox/, :input_keyword
+		window_title /検\索/,		:invoke_save
+		window_title /保存/,		:save_file
+		window_title /検\索/,		:quit
+	end
+
 	def save_search_result(keyword, save_path)
-		operate do
-			on window_title: /Firefox/ do
-				press_ctrl_k.
-				input(keyword).and_enter
-			end
-
-			on window_title: /検索$/ do
-				press_ctrl_s
-			end
-
-			on :new_window do
-				input(save_path).
-					press_tab.
-					press_down(2).and_enter.
-					press_enter
-			end
-		end
+		run(keyword: keyword, save_path: save_path)
 	end
 end
+
