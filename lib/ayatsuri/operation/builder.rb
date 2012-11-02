@@ -1,5 +1,5 @@
 require 'ayatsuri/operation'
-require 'ayatsuri/operation/condition'
+require 'ayatsuri/application/window/condition'
 
 module Ayatsuri
 	class Operation
@@ -7,9 +7,10 @@ module Ayatsuri
 
 			class << self
 
-				def build(&plan_block)
+				def build(&order_block)
 					builder = new
-					builder.instance_eval(&plan_block).operations
+					builder.instance_eval(&order_block)
+					builder.operations
 				end
 			end
 
@@ -19,18 +20,28 @@ module Ayatsuri
 				@operations = []
 			end
 
-			def on(condition_spec, &operation_block)
+			def window_title(expect, method_name, optional=true)
 				add_operation(
-					Operation.new(
-						Operation::Condition.create(condition_spec),
-						&operation_block
-					)
+					create_operation(:title, expect, method_name, optional)
 				)
-				self
 			end
 
 			def add_operation(operation)
 				@operations << operation
+			end
+
+		private
+
+			def create_operation(query_method, expect, method_name, optional)
+				Operation.new(
+					create_condition(query_method, expect),
+					method_name,
+					optional
+				)
+			end
+
+			def create_condition(query_method, expect)
+				Application::Window::Condition.create(query_method, expect)
 			end
 		end
 	end

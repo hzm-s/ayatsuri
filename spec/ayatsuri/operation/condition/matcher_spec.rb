@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+__END__
 module Ayatsuri
 	class Operation
 		class Condition

@@ -4,13 +4,13 @@ module Ayatsuri
 	class Operation
 		describe Builder do
 			describe ".build" do
-				subject { described_class.build &plan_block }
+				subject { described_class.build &order_block }
 
-				let(:plan_block) { lambda { "plan block" } }
+				let(:order_block) { lambda { "operations" } }
 
 				before do
 					described_class.stub(:new).and_return(builder)
-					builder.stub(:instance_eval).with(&plan_block).and_return(builder)
+					builder.stub(:instance_eval).with(&order_block).and_return(builder)
 					builder.stub(:operations).and_return(operations)
 				end
 
@@ -24,38 +24,29 @@ module Ayatsuri
 
 			describe "when constructed" do
 
-				describe "#on" do
-					subject { model.on condition_spec &operation_block }
+				describe "#window_title" do
+					subject { model.window_title expect, method_name, optional }
 
-					let(:condition_spec) { mock 'condition spec' }
-					let(:operation_block) { lambda { "operation block" } }
-
-					before do
-						@operations = []
-						model.tap do |model|
-							model.stub(:add_operation) {|op| @operations << op }
-							model.stub(:operations) { @operations }
-						end
-					end
+					let(:expect) { mock 'expect window condition' }
+					let(:method_name) { :operate_method }
+					let(:optional) { mock 'optional flag' }
 
 					before do
-						stub_const("Ayatsuri::Operation", Class.new)
-						stub_const("Ayatsuri::Operation::Condition", Class.new)
-						Operation::Condition.stub(:create).with(condition_spec).and_return(condition)
-						Operation.stub(:new).with(condition, &operation_block).and_return(operation)
+						Application::Window::Condition.stub(:create).with(:title, expect) { condition }
+						Operation.stub(:new).with(condition, method_name, optional) { operation }
+						model.stub(:add_operation).with(operation) { operation }
 					end
 
-					let(:condition) { mock 'to begin operating condition' }
+					let(:condition) { mock 'window condition' }
 					let(:operation) { mock 'ayatsuri operation' }
 
-					it { subject.operations.should == [operation] }
+					it { should == operation }
 				end
 
 				describe "#add_operation" do
 					subject { model.add_operation operation }
 					let(:operation) { mock 'operation' }
-					before { subject }
-					it { model.operations.should == [operation] }
+					it { subject; model.operations.should == [operation] }
 				end
 			end
 		end

@@ -2,15 +2,11 @@ module Ayatsuri
 	class Operation
 		class Index
 
-			class << self
-
-				def build(&index_block)
-					instance_eval(&index_block)
-				end
-
-				def window_title(matcher, delegate_method)
-				end
+			class Builder
 			end
+		end
+
+		class Index
 		end
 	end
 end

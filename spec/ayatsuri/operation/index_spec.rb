@@ -1,8 +1,13 @@
 require 'spec_helper'
 
+__END__
 module Ayatsuri
 	class Operation
 		describe Index do
+		end
+	end
+end
+
 			describe ".build" do
 				subject { described_class.build &index_block }
 

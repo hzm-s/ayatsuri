@@ -4,6 +4,10 @@ module Ayatsuri
 	describe Application do
 		let(:klass) { described_class }
 
+		before do
+			stub_const("FakeOperator", Class.new)
+		end
+
 		describe ".ayatsuri_for" do
 			subject { klass.ayatsuri_for exe_path, starter_name }
 
@@ -19,19 +23,55 @@ module Ayatsuri
 			it { subject; klass.starter.should == starter }
 		end
 
-		describe ".operation_index" do
-			subject { klass.define_operation_index FakeOperation, &index_block }
+		describe ".define_operation_order" do
+			subject { klass.define_operation_order FakeOperator, &order_block }
 
-			let(:index_block) { lambda { "define operation index" } }
+			let(:order_block) { lambda { "operation index order" } }
 
 			before do
-				stub_const("FakeOperation", Class.new)
-				Operation::Index.stub(:build).with(&index_block).and_return(operation_index)
+				Operation::Order.stub(:create).with(&order_block).and_return(operation_order)
 			end
 
-			let(:operation_index) { mock 'operation index' }
+			let(:operation_order) { mock 'operation order' }
 
-			it { subject; klass.operation_index.should == operation_index }
+			it { subject; klass.operator_class.should == FakeOperator }
+			it { subject; klass.operation_order.should == operation_order }
+		end
+
+		describe ".application_attribute_methods" do
+			subject { described_class.application_attribute_methods }
+			let(:methods) { [:starter, :operator_class, :operation_order] }
+			it { should == methods }
+		end
+
+		let(:model) { described_class.new }
+
+		describe "#run" do
+			subject { model.run task_params }
+
+			let(:task_params) { mock 'parameters for task' }
+
+			before do
+				model.stub(:starter) { starter }
+				model.stub(:operator_class) { operator_class }
+				model.stub(:operation_order) { operation_order }
+				Application::Process.stub(:new).with(starter, operator) { process }
+				process.should_receive(:run)
+			end
+
+			let(:starter) { mock 'application starter' }
+			let(:operation_order) { mock 'operation order' }
+			let(:operator_class) do
+				double('operator class').tap do |d|
+					d.stub(:new).with(operation_order, task_params) { operator }
+				end
+			end
+			let(:operator) { mock 'operator' }
+			let(:process) { mock 'application process' }
+
+			it "call run to application start process" do
+				subject
+			end
 		end
 	end
 end

@@ -1,10 +1,11 @@
 module Ayatsuri
 	class Operation
-		attr_reader :condition, :operation_block
+		attr_reader :condition, :method_name, :optional
+		alias_method :optional?, :optional
 
-		def initialize(condition, &operation_block)
-			@condition = condition
-			@operation_block = operation_block
+		def initialize(condition, method_name, optional)
+			@condition, @method_name = condition, method_name
+			@optional = optional
 		end
 	end
 end
