@@ -2,7 +2,7 @@
 
 require 'ayatsuri'
 
-class SaveSearchResult < Ayatsuri::Operation
+class FirefoxOperator < Ayatsuri::Operator
 
 	def skip_setup
 		"skip"
@@ -31,8 +31,8 @@ end
 class Firefox < Ayatsuri::Application
 	ayatsuri_for 'C:\Program Files\Mozilla Firefox\firefox.exe'
 
-	define_operation_index SaveSearchResult do
-		window_title /Setup/,		:skip_setup, :optional
+	define_operation_order FirefoxOperator do
+		window_title /Setup/,		:skip_setup,		:optional
 		window_title /Firefox/, :input_keyword
 		window_title /検\索/,		:invoke_save
 		window_title /保存/,		:save_file
