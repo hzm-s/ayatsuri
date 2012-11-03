@@ -1,3 +1,5 @@
+#encoding:utf-8
+
 module Ayatsuri
 	class Application
 		class Starter
@@ -27,9 +29,11 @@ module Ayatsuri
 			end
 
 			class Clickonce < Base
+				include Waitable
 
 				def start
 					driver.invoke(:Send, "#r")
+					wait_until(3, "win + r") { driver.window_exist?("[CLASS:#32770]") }
 					driver.invoke(:Send, "#{@exe_path}{ENTER}")
 				end
 			end

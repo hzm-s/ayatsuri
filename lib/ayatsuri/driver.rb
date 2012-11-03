@@ -2,6 +2,7 @@ require 'win32ole'
 
 module Ayatsuri
 	class Driver
+		autoload :EncodeHelper,	'driver/encode_helper'
 		autoload :QueryMethods, 'driver/query_methods'
 
 		include QueryMethods

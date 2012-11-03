@@ -1,6 +1,7 @@
 module Ayatsuri
 	class Driver
 		module QueryMethods
+			include EncodeHelper
 
 			def get_active_window_handle
 				query(:WinGetHandle, ["[active]"])
@@ -18,8 +19,8 @@ module Ayatsuri
 				query(:ControlGetText, ["[active]", "", control_id])
 			end
 
-			def window_exist?(window_title)
-				query(:WinExists, [window_title])
+			def window_exist?(window_id)
+				query(:WinExists, [window_id]) == 1
 			end
 
 		private
@@ -31,14 +32,6 @@ module Ayatsuri
 						*encode_for_driver(args)
 					)
 				)
-			end
-
-			def encode_for_driver(args)
-				args.collect {|arg| arg.encode(Encoding::WINDOWS_31J) if arg.instance_of?(String) }
-			end
-
-			def encode_for_ayatsuri(result)
-				result.encode(Encoding::UTF_8) if result.instance_of?(String)
 			end
 		end
 	end

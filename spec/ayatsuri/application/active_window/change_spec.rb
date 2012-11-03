@@ -5,7 +5,7 @@ def fake_window(active_window_pool)
 		active_window_pool.each do |active_window|
 			Fiber.yield(active_window)
 		end
-		raise Ayatsuri::ActiveWindowChangeTimeout
+		raise Ayatsuri::Timeout
 	end
 	Ayatsuri::Application::Window.stub(:active) { fiber.resume }
 end
@@ -25,7 +25,7 @@ module Ayatsuri
 
 				describe "#next" do
 					before do
-						fake_window([:win0, :win0, :win1, :win2, :win2, :win2, :win3])
+						fake_window([:win0, :win0, :win1, :win2, :win2, :win2, :win3, :win2, :win2, :win1])
 						@model = described_class.init
 					end
 
@@ -33,6 +33,8 @@ module Ayatsuri
 						@model.next.should == :win1
 						@model.next.should == :win2
 						@model.next.should == :win3
+						@model.next.should == :win2
+						@model.next.should == :win1
 					end
 
 					context "when active window never change" do
@@ -42,7 +44,7 @@ module Ayatsuri
 							@model.next
 						end
 
-						it { expect { @model.next }.to raise_error(Ayatsuri::ActiveWindowChangeTimeout) }
+						it { expect { @model.next }.to raise_error(Ayatsuri::Timeout) }
 					end
 				end
 			end

@@ -11,7 +11,7 @@ module Ayatsuri
 	class FailedToQuitApplication < AyatsuriError
 	end
 
-	class ActiveWindowChangeTimeout < AyatsuriError
+	class Timeout < AyatsuriError
 	end
 
 	class ApplicationNotRunning < AyatsuriError

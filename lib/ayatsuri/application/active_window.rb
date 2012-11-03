@@ -1,12 +1,11 @@
-require 'ayatsuri/application/window'
-
 module Ayatsuri
 	class Application
-
 		class ActiveWindow
 
 			class Change
-				INTERVAL = 0.1
+				include Waitable
+
+				TIMEOUT = 60 * 10
 
 				attr_reader :last
 
@@ -23,10 +22,10 @@ module Ayatsuri
 				end
 
 				def next
-					until @last != (current = get_active_window)
-						sleep INTERVAL
+					wait_until(TIMEOUT, "active window change") do
+						@last != (@current = get_active_window)
 					end
-					return @last = current
+					return @last = @current
 				end
 
 			private

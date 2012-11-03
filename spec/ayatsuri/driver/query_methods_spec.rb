@@ -50,7 +50,15 @@ module Ayatsuri
 				let(:window_title) { 'window title' }
 				let(:query_args) { [:WinExists, [window_title]] }
 
-				it { should == result }
+				context "when exist" do
+					let(:result) { "1" }
+					it { should be_true }
+				end
+
+				context "when NOT exist" do
+					let(:result) { "0" }
+					it { should be_false }
+				end
 			end
 		end
 	end

@@ -36,7 +36,9 @@ module Ayatsuri
 					subject { model.start }
 
 					before do
-						driver.stub(:invoke).with(:Send, "#r#{exe_path}{ENTER}") { true }
+						driver.stub(:invoke).with(:Send, "#r") { true }
+						driver.stub(:window_exist?) { true }
+						driver.stub(:invoke).with(:Send, "#{exe_path}{ENTER}") { true }
 					end
 
 					it { should be_true }

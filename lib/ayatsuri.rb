@@ -7,4 +7,5 @@ module Ayatsuri
 	autoload :Driver,				'driver'
 	autoload :Operation,		'operation'
 	autoload :Operator,			'operator'
+	autoload :Waitable,			'wait'
 end
