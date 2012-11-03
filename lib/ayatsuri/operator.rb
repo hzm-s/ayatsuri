@@ -1,34 +1,21 @@
-require 'ayatsuri/operator/application_command'
-
 module Ayatsuri
 	class Operator
-		include ApplicationCommand
+		attr_reader :operation_order, :params, :completed
+		alias_method :completed?, :completed
 
-		def initialize(driver, application)
-			@driver, @application = driver, application
+		def initialize(operation_order, params)
+			@operation_order, @params = operation_order, params
+			@completed = false
 		end
 
-		def perform(plan)
-			begin
-				run_application
-				operate(plan)
-			rescue => exception
-				raise exception
-			ensure
-				quit_application
-			end
-		end
-
-		def run_application
-			@application.run
+		def complete!
+			@completed = true
+			quit_application
+			self
 		end
 
 		def quit_application
-			@application.quit
-		end
-
-		def operate(plan)
-			plan.each_operation {|operation| operation.perform(self) }
+			close_all_opened_window
 		end
 	end
 end

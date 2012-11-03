@@ -32,7 +32,7 @@ module Ayatsuri
 					let(:optional) { mock 'optional flag' }
 
 					before do
-						Application::Window::Condition.stub(:create).with(:title, expect) { condition }
+						Condition.stub(:create).with(:title, expect) { condition }
 						Operation.stub(:new).with(condition, method_name, optional) { operation }
 						model.stub(:add_operation).with(operation) { operation }
 					end

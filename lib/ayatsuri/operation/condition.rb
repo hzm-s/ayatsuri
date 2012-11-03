@@ -1,34 +1,60 @@
-__END__
-require 'ayatsuri/operation/condition/matcher'
-
 module Ayatsuri
 	class Operation
 		class Condition
 
-			class << self
+			class Matcher
+				module ByRegexp
 
-				def create(spec)
-					case spec
-					when Hash
-						new(*resolve_spec(spec))
-					when Symbol
-						create({ spec => true })
+					def match?(actual)
+						actual =~ self.expectation
 					end
 				end
 
-			private
+				module ByEqual
 
-				def resolve_spec(spec)
-					[ spec.keys[0], Matcher.create(spec.values[0]) ]
+					def match?(actual)
+						actual == self.expectation
+					end
+				end
+
+				class << self
+
+					def create(expectation)
+						new(expectation).extend(strategy_module(expectation))
+					end
+
+				private
+
+					def strategy_module(expectation)
+						case expectation
+						when Regexp
+							ByRegexp
+						else
+								ByEqual
+						end
+					end
+				end
+
+				attr_reader :expectation
+
+				def initialize(expectation)
+					@expectation = expectation
 				end
 			end
 
-			def initialize(method_for_candidate, matcher)
-				@method_for_candidate, @matcher = method_for_candidate, matcher
+			class << self
+
+				def create(query_method, expectation)
+					new(query_method, Matcher.create(expectation))
+				end
+			end
+
+			def initialize(query_method, matcher)
+				@query_method, @matcher = query_method, matcher
 			end
 
 			def satisfy?(candidate)
-				match?(candidate.send(@method_for_candidate))
+				@matcher.match?(candidate.send(@query_method))
 			end
 		end
 	end

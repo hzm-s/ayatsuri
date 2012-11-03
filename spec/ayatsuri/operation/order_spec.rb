@@ -19,7 +19,6 @@ module Ayatsuri
 			end
 
 			let(:model) { described_class.new operations }
-
 		end
 	end
 end

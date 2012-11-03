@@ -2,62 +2,46 @@ require 'spec_helper'
 
 module Ayatsuri
 	describe Operator do
-		let(:model) { described_class.new driver, application }
+		let(:model) { described_class.new operation_order, param_hash }
 
-		before do
-			stub_const("Ayatsuri::ErrorInPerform", StandardError.new)
+		let(:operation_order) { mock 'operation order' }
+		let(:param_hash) { mock 'paramter hash' }
+
+		describe ".new" do
+			subject { model }
+
+			it { subject.operation_order.should == operation_order }
+			it { subject.params.should == param_hash }
 		end
 
-		let(:driver) { mock 'driver' }
-		let(:application) { mock 'application' }
+		describe "#complete!" do
+			subject { model.complete! }
 
-		describe "#perform" do
-			subject { model.perform plan }
+			before { model.stub(:quit_application) }
 
-			let(:plan) { mock 'operation plan' }
+			it { subject.completed?.should be_true }
 
-			before do
-				model.stub(:run_application) { true }
-				model.stub(:operate).with(plan) { true }
-				model.should_receive(:quit_application) { true }
-			end
+			describe "#completed?" do
+				subject { model.completed? }
 
-			context "when successful" do
-				it { should be_true }
-			end
-
-			context "when any exception in process" do
-				before do
-					model.stub(:operate).with(plan) { raise exception }
+				context "when completed" do
+					before { model.complete! }
+					it { should be_true }
 				end
-				let(:exception) { ErrorInPerform }
-				it { expect { subject }.to raise_error(exception) }
-			end
-		end
 
-		describe "#run_application" do
-			subject { model.run_application }
-			before { application.stub(:run) { true } }
-			it { should be_true }
+				context "when NOT completed" do
+					it { should be_false }
+				end
+			end
 		end
 
 		describe "#quit_application" do
 			subject { model.quit_application }
-			before { application.stub(:quit) { true } }
-			it { should be_true }
-		end
-
-		describe "#operate" do
-			subject { model.operate plan }
-
-			let(:plan) { mock 'operate plan' }
-			let(:operate_block) { lambda { "operate block" } }
-
-			let(:stub_plan) { plan.stub(:each_operation) }
 
 			before do
-				stub_plan.with(&operate_block).and_return(true)
+				model.stub(:close_all_opened_window) { true }
 			end
+
 			it { should be_true }
 		end
 	end

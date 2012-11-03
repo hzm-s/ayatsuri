@@ -11,10 +11,16 @@ module Ayatsuri
 	class FailedToQuitApplication < AyatsuriError
 	end
 
+	class ActiveWindowChangeTimeout < AyatsuriError
+	end
+
 	class ApplicationNotRunning < AyatsuriError
 	end
 
 	class FailedToOperate < AyatsuriError
+	end
+
+	class AbortOperationOrder < AyatsuriError
 	end
 
 	class OperationNotImplement < AyatsuriError

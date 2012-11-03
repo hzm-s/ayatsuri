@@ -47,9 +47,9 @@ module Ayatsuri
 		let(:model) { described_class.new }
 
 		describe "#run" do
-			subject { model.run task_params }
+			subject { model.run param_hash }
 
-			let(:task_params) { mock 'parameters for task' }
+			let(:param_hash) { mock 'parameters for task' }
 
 			before do
 				model.stub(:starter) { starter }
@@ -63,7 +63,7 @@ module Ayatsuri
 			let(:operation_order) { mock 'operation order' }
 			let(:operator_class) do
 				double('operator class').tap do |d|
-					d.stub(:new).with(operation_order, task_params) { operator }
+					d.stub(:new).with(operation_order, param_hash) { operator }
 				end
 			end
 			let(:operator) { mock 'operator' }

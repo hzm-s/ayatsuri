@@ -1,20 +1,41 @@
-require 'ayatsuri/operation/order'
-require 'ayatsuri/application/starter'
-require 'ayatsuri/application/active_window'
-
 module Ayatsuri
 	class Application
+		autoload :ActiveWindow,	'application/active_window'
+		autoload :Starter,			'application/starter'
+		autoload :Window,				'application/window'
+
 		class Process
+			attr_reader :starter, :operator, :dispatcher
 
 			def initialize(starter, operator)
 				@starter, @operator = starter, operator
+				@dispatcher = nil
 			end
 
 			def run
-				active_window_dispatcher = ActiveWindow::Dispatcher.new(@starter)
-				active_window_dispatcher.start(@operator)
+				init_dispatcher
+				start_application
+				start_dispatch
+			end
+
+			def init_dispatcher
+				@dispatcher = ActiveWindow::Dispatcher.new(ActiveWindow::Change.init)
+			end
+
+			def start_application
+				@starter.start
+			end
+
+			def start_dispatch
+				dispatcher.start(operator)
+			rescue => exception
+				operator.quit_application
+				raise exception
 			end
 		end
+	end
+
+	class Application
 
 		class << self
 			APPLICATION_ATTRIBUTE_METHODS = [:starter, :operator_class, :operation_order]
@@ -35,8 +56,8 @@ module Ayatsuri
 			end
 		end
 
-		def run(task_parameters)
-			operator = operator_class.new(operation_order, task_parameters)
+		def run(*task_parameters)
+			operator = operator_class.new(operation_order, *task_parameters)
 			process = Process.new(starter, operator)
 			process.run
 		end

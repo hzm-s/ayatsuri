@@ -1,6 +1,3 @@
-require 'ayatsuri/operation'
-require 'ayatsuri/application/window/condition'
-
 module Ayatsuri
 	class Operation
 		class Builder
@@ -41,7 +38,7 @@ module Ayatsuri
 			end
 
 			def create_condition(query_method, expect)
-				Application::Window::Condition.create(query_method, expect)
+				Condition.create(query_method, expect)
 			end
 		end
 	end

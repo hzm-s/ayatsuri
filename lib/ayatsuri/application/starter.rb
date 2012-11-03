@@ -8,22 +8,29 @@ module Ayatsuri
 					@exe_path = exe_path
 				end
 
-				def start(driver)
+				def start
 					raise StandardError, "Not implemented #start for #{self.class}"
+				end
+
+			protected
+
+				def driver
+					Driver.instance
 				end
 			end
 			
 			class Default < Base
 
-				def start(driver)
+				def start
 					driver.run_application(@exe_path)
 				end
 			end
 
 			class Clickonce < Base
 
-				def start(driver)
-					driver.input(:win_r, @exe_path, :enter)
+				def start
+					driver.invoke(:Send, "#r")
+					driver.invoke(:Send, "#{@exe_path}{ENTER}")
 				end
 			end
 

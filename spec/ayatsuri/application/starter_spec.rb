@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 shared_context "starter" do
+	before { Ayatsuri::Driver.stub(:instance) { driver } }
 	let(:exe_path) { "/path/to/application.exe" }
-	let(:driver) { mock 'autoit driver' }
+	let(:driver) { mock 'driver instance' }
 end
 
 module Ayatsuri
@@ -32,10 +33,10 @@ module Ayatsuri
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start driver }
+					subject { model.start }
 
 					before do
-						driver.stub(:input).with(:win_r, exe_path, :enter) { true }
+						driver.stub(:invoke).with(:Send, "#r#{exe_path}{ENTER}") { true }
 					end
 
 					it { should be_true }
@@ -48,7 +49,7 @@ module Ayatsuri
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start driver }
+					subject { model.start }
 
 					before do
 						driver.stub(:run_application).with(exe_path) { true }

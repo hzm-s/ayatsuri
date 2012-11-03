@@ -1,56 +1,6 @@
 require 'spec_helper'
 
 module Ayatsuri
-	class Driver
-		
-		describe QueryMethods do
-			let(:model) { Object.new.extend(described_class) }
-
-			before do
-				model.stub(:ole) { stub_ole }
-				raw_string.stub(:encode) { encoded_string }
-			end
-
-			let(:stub_ole) { mock 'ole for autoit' }
-			let(:raw_string) { mock 'raw string' }
-			let(:encoded_string) { mock 'encoded string' }
-
-			let(:control_id) { mock 'control id' }
-
-			describe ".encoding=" do
-				subject { described_class.encoding = enc }
-				let(:enc) { Encoding::UTF_8 }
-				it { subject; Encoding.default_internal.should == enc }
-			end
-
-			describe "#get_active_window_title" do
-				subject { model.get_active_window_title }
-				before do
-					stub_ole.stub(:WinGetTitle).with("[active]") { raw_string }
-				end
-				it { should == encoded_string }
-			end
-
-			describe "#get_active_window_handle" do
-				subject { model.get_active_window_handle }
-				before { stub_ole.stub(:WinGetHandle).with("[active]") { raw_string } }
-				it { should == raw_string }
-			end
-
-			describe "#get_active_window_text" do
-				subject { model.get_active_window_text }
-				before { stub_ole.stub(:WinGetText).with("[active]") { raw_string } }
-				it { should == encoded_string }
-			end
-
-			describe "#get_control_text" do
-				subject { model.get_control_text control_id }
-				before { stub_ole.stub(:ControlGetText).with("[active]", "", control_id) { raw_string } }
-				it { should == encoded_string }
-			end
-		end
-	end
-
 	describe Driver do
 		let(:model) { described_class.instance }
 
@@ -95,6 +45,17 @@ module Ayatsuri
 			context "when failed" do
 				let(:result) { raise RuntimeError }
 				it { expect { subject }.to raise_error(Ayatsuri::FailedToOperate) }
+			end
+		end
+
+		describe "#run_application" do
+			subject { model.run_application exe_path }
+			
+			let(:exe_path) { mock '/path/to/application.exe' }
+
+			it "invokes Run" do
+				model.should_receive(:invoke).with(:Run, [exe_path])
+				subject
 			end
 		end
 	end
