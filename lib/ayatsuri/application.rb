@@ -5,10 +5,10 @@ module Ayatsuri
 		autoload :Window,				'application/window'
 
 		class Process
-			attr_reader :starter, :operator, :dispatcher
+			attr_reader :dispatcher
 
-			def initialize(starter, operator)
-				@starter, @operator = starter, operator
+			def initialize(starter, operation_order, operator)
+				@starter, @operation_order, @operator = starter, operation_order, operator
 				@dispatcher = nil
 			end
 
@@ -19,7 +19,10 @@ module Ayatsuri
 			end
 
 			def init_dispatcher
-				@dispatcher = ActiveWindow::Dispatcher.new(ActiveWindow::Change.init)
+				@dispatcher = ActiveWindow::Dispatcher.new(
+					ActiveWindow::Change.init,
+					@operation_order
+				)
 			end
 
 			def start_application
@@ -28,9 +31,9 @@ module Ayatsuri
 
 			def start_dispatch
 				dispatcher.start(operator)
-#			rescue => exception
-#				operator.quit_application
-#				raise exception
+			rescue => exception
+				operator.quit_application
+				raise exception
 			end
 		end
 	end
@@ -56,9 +59,9 @@ module Ayatsuri
 			end
 		end
 
-		def run(*task_parameters)
-			operator = operator_class.new(operation_order, *task_parameters)
-			process = Process.new(starter, operator)
+		def run(params_for_operator)
+			operator = operator_class.new(params_for_operator)
+			process = Process.new(starter, operation_order, operator)
 			process.run
 		end
 

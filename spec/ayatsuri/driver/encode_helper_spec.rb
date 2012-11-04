@@ -23,6 +23,11 @@ module Ayatsuri
 					subject { model.encode_for_ayatsuri %w|a b c| }
 					it { subject.all? {|s| s.encoding == Encoding::UTF_8 }.should be_true }
 				end
+
+				context "given Integer" do
+					subject { model.encode_for_ayatsuri 1 }
+					it { subject.should == 1 }
+				end
 			end
 		end
 	end

@@ -3,16 +3,18 @@ require 'spec_helper'
 module Ayatsuri
 	class Application
 		describe Process do
-			let(:model) { described_class.new starter, operator }
+			let(:model) { described_class.new starter, operation_order, operator }
 
 			let(:starter) { mock 'application starter' }
+			let(:operation_order) { mock 'operation order' }
 			let(:operator) { mock 'operator' }
+
 			let(:dispatcher) { mock 'dispatcher' }
 
 			describe "#run" do
 				subject { model.run }
 
-				it "calls start autmation process methods" do
+				it "run autmation process methods" do
 					model.should_receive(:init_dispatcher).ordered
 					model.should_receive(:start_application).ordered
 					model.should_receive(:start_dispatch).ordered
@@ -24,11 +26,11 @@ module Ayatsuri
 				subject { model.init_dispatcher }
 
 				before do
-					ActiveWindow::Change.stub(:init) { active_window }
-					ActiveWindow::Dispatcher.stub(:new).with(active_window) { dispatcher }
+					ActiveWindow::Change.stub(:init) { active_window_change }
+					ActiveWindow::Dispatcher.stub(:new).with(active_window_change, operation_order) { dispatcher }
 				end
 
-				let(:active_window) { mock 'active window' }
+				let(:active_window_change) { mock 'active window change' }
 
 				it { should == dispatcher }
 			end

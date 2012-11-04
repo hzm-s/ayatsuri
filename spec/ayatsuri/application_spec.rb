@@ -47,25 +47,25 @@ module Ayatsuri
 		let(:model) { described_class.new }
 
 		describe "#run" do
-			subject { model.run param_hash }
+			subject { model.run params_for_operator }
 
-			let(:param_hash) { mock 'parameters for task' }
+			let(:params_for_operator) { mock 'parameters for task' }
 
 			before do
 				model.stub(:starter) { starter }
 				model.stub(:operator_class) { operator_class }
 				model.stub(:operation_order) { operation_order }
-				Application::Process.stub(:new).with(starter, operator) { process }
+			end
+
+			before do
+				operator_class.stub(:new).with(params_for_operator) { operator }
+				Application::Process.stub(:new).with(starter, operation_order, operator) { process }
 				process.should_receive(:run)
 			end
 
 			let(:starter) { mock 'application starter' }
 			let(:operation_order) { mock 'operation order' }
-			let(:operator_class) do
-				double('operator class').tap do |d|
-					d.stub(:new).with(operation_order, param_hash) { operator }
-				end
-			end
+			let(:operator_class) { mock 'operator class' }
 			let(:operator) { mock 'operator' }
 			let(:process) { mock 'application process' }
 

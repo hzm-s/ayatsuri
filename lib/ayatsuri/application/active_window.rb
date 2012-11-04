@@ -40,16 +40,25 @@ module Ayatsuri
 
 			class Dispatcher
 
-				def initialize(active_window_change)
+				def initialize(active_window_change, operation_order)
 					@active_window_change = active_window_change
+					@operation_order = operation_order
 				end
 
 				def start(operator)
 					until operator.completed?
-						operator.assign(@active_window_change.next)
+						assign_operation(operator)
 					end
 				rescue => exception
 					raise Ayatsuri::AbortOperationOrder, exception.message
+				end
+
+				def assign_operation(operator)
+					operator.assign(retrieve_operation_by_active_window)
+				end
+
+				def retrieve_operation_by_active_window
+					@operation_order.retrieve(@active_window_change.next)
 				end
 			end
 		end
