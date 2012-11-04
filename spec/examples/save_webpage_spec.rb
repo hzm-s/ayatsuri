@@ -1,14 +1,14 @@
 require 'spec_helper'
-require 'firefox'
+require 'ie'
 
-describe "Firefox Automation" do
-	let(:ff) { Firefox.new }
+describe "IE Automation" do
+	let(:ie) { IE.new }
 
 	describe "#save_seach_result" do
-		subject { ff.save_search_result keyword, save_path }
+		subject { ie.save_search_result keyword, save_path }
 
-		let(:keyword) { "firefox" }
-		let(:save_path) { File.join(File.dirname(__FILE__), "search_result_for#{keyword}.html") }
+		let(:keyword) { "ayatsuri" }
+		let(:save_path) { File.join(File.dirname(__FILE__), "search_result_#{keyword}.html") }
 
 		it { File.exist?(subject).should be_true }
 	end

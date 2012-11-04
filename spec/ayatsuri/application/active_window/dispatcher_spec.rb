@@ -42,23 +42,23 @@ module Ayatsuri
 					subject { model.assign_operation operator }
 
 					before do
-						model.stub(:retrieve_operation_by_active_window) { operation }
+						active_window_change.stub(:next) { active_window }
+						model.stub(:retrieve_operation).with(active_window) { operation }
 					end
 
 					let(:active_window) { mock 'active window' }
 					let(:operation) { mock 'operation' }
 
 					it "assigns operation to operator" do
-						operator.should_receive(:assign).with(operation)
+						operator.should_receive(:assign).with(operation, active_window)
 						subject
 					end
 				end
 
-				describe "#retrieve_operation_by_active_window" do
-					subject { model.retrieve_operation_by_active_window }
+				describe "#retrieve_operation" do
+					subject { model.retrieve_operation active_window }
 
 					before do
-						active_window_change.stub(:next) { active_window }
 						operation_order.stub(:retrieve).with(active_window) { operation }
 					end
 

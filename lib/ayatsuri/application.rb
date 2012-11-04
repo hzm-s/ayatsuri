@@ -3,7 +3,9 @@ module Ayatsuri
 		autoload :ActiveWindow,	'application/active_window'
 		autoload :Starter,			'application/starter'
 		autoload :Window,				'application/window'
+	end
 
+	class Application
 		class Process
 			attr_reader :dispatcher
 
@@ -30,10 +32,10 @@ module Ayatsuri
 			end
 
 			def start_dispatch
-				dispatcher.start(operator)
-			rescue => exception
-				operator.quit_application
-				raise exception
+				dispatcher.start(@operator)
+			#rescue => exception
+			#	@operator.quit_application
+			#	raise exception
 			end
 		end
 	end

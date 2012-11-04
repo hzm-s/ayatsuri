@@ -2,16 +2,34 @@ require 'spec_helper'
 
 module Ayatsuri
 	describe Operator do
-		let(:model) { described_class.new operation_order, param_hash }
+		let(:model) { described_class.new param_hash }
 
-		let(:operation_order) { mock 'operation order' }
 		let(:param_hash) { mock 'paramter hash' }
 
 		describe ".new" do
 			subject { model }
-
-			it { subject.operation_order.should == operation_order }
+			it { subject.driver.should == Driver.instance }
 			it { subject.params.should == param_hash }
+		end
+
+		describe "#assign" do
+			subject { model.assign operation, window }
+
+			let(:operation) { mock 'operation' }
+			let(:window) { mock 'window' }
+
+			before do
+				model.stub(:window_history) { window_history }
+				operation.stub(:method_name) { :operate_method }
+			end
+
+			let(:window_history) { mock 'window history' }
+
+			it "calls operation.method_name to self" do
+				window_history.should_receive(:<<).with(window)
+				model.should_receive(operation.method_name)
+				subject
+			end
 		end
 
 		describe "#complete!" do
@@ -33,16 +51,6 @@ module Ayatsuri
 					it { should be_false }
 				end
 			end
-		end
-
-		describe "#quit_application" do
-			subject { model.quit_application }
-
-			before do
-				model.stub(:close_all_opened_window) { true }
-			end
-
-			it { should be_true }
 		end
 	end
 end

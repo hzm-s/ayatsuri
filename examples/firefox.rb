@@ -30,7 +30,7 @@ class Firefox < Ayatsuri::Application
 	ayatsuri_for 'firefox', :clickonce
 
 	define_operation_order FirefoxOperator do
-		window_title /制御$/,		:skip_setup,		:optional
+		window_title /.+/,			:skip_setup,		:optional
 		window_title /Firefox/, :input_keyword
 		window_title /検索/,		:invoke_save
 		window_title /保存/,		:save_file

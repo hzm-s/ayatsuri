@@ -1,6 +1,10 @@
 module Ayatsuri
 	module Waitable
-		INTERVAL = 0.1
+		@interval = 1
+
+		class << self
+			attr_accessor :interval
+		end
 
 		def wait_until(timeout=60, message=nil, &block)
 			end_time = Time.now + timeout
@@ -9,7 +13,7 @@ module Ayatsuri
 				result = block.call
 				return if result
 
-				sleep INTERVAL
+				sleep Waitable.interval
 			end
 
 			raise Ayatsuri::Timeout, message

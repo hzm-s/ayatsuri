@@ -20,6 +20,9 @@ module Ayatsuri
 	class FailedToOperate < AyatsuriError
 	end
 
+	class NothingNextOperation < AyatsuriError
+	end
+
 	class AbortOperationOrder < AyatsuriError
 	end
 

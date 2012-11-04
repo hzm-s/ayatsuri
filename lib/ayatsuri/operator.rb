@@ -1,21 +1,42 @@
 module Ayatsuri
 	class Operator
-		attr_reader :operation_order, :params, :completed
+		autoload :ActionProxy,		'operator/action_proxy'
+		autoload :Terminator,			'operator/terminator'
+		autoload :WindowHistory,	'operator/window_history'
+	end
+
+	class Operator
+		include ActionProxy
+		include Terminator
+		include Waitable
+
+		attr_reader :params, :driver, :window_history, :completed
 		alias_method :completed?, :completed
 
-		def initialize(operation_order, params)
-			@operation_order, @params = operation_order, params
+		def initialize(params)
+			@params = params
+			@driver = Driver.instance
+			@window_history = WindowHistory.new
 			@completed = false
+		end
+
+		def assign(operation, window)
+			window_history << window
+			send(operation.method_name)
+		end
+
+		def skip
+			sleep 1
+		end
+
+		def complete
+			complete!
 		end
 
 		def complete!
 			@completed = true
 			quit_application
 			self
-		end
-
-		def quit_application
-			close_all_opened_window
 		end
 	end
 end

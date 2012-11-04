@@ -54,11 +54,13 @@ module Ayatsuri
 				end
 
 				def assign_operation(operator)
-					operator.assign(retrieve_operation_by_active_window)
+					active_window = @active_window_change.next
+					operation = retrieve_operation(active_window)
+					operator.assign(operation, active_window)
 				end
 
-				def retrieve_operation_by_active_window
-					@operation_order.retrieve(@active_window_change.next)
+				def retrieve_operation(active_window)
+					@operation_order.retrieve(active_window)
 				end
 			end
 		end
