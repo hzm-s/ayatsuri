@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-Ayatsuri::Waitable.interval = 0.1
+Ayatsuri::Interval.application_monitor = 0.1
 
 def fake_window(active_window_pool)
 	fiber = Fiber.new do

@@ -26,7 +26,7 @@ module Ayatsuri
 		end
 
 		def skip
-			sleep 1
+			sleep Interval.skip_operate
 		end
 
 		def complete

@@ -2,7 +2,7 @@
 
 require 'ayatsuri'
 
-Ayatsuri::Waitable.interval = 2
+Ayatsuri::Interval.application_monitor = 2
 
 class IEOperator < Ayatsuri::Operator
 

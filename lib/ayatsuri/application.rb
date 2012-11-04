@@ -33,9 +33,9 @@ module Ayatsuri
 
 			def start_dispatch
 				dispatcher.start(@operator)
-			#rescue => exception
-			#	@operator.quit_application
-			#	raise exception
+			rescue => exception
+				@operator.quit_application
+				raise exception
 			end
 		end
 	end

@@ -8,4 +8,14 @@ module Ayatsuri
 	autoload :Operation,		'operation'
 	autoload :Operator,			'operator'
 	autoload :Waitable,			'wait'
+
+	class Interval
+		@application_monitor	= 1
+		@skip_operate					= 0.5
+
+		class << self
+			attr_accessor :application_monitor,
+										:skip_operate
+		end
+	end
 end
