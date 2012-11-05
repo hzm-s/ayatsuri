@@ -11,28 +11,24 @@ module Ayatsuri
 				query(:WinGetTitle, ["[active]"])
 			end
 
-			def get_active_window_text
-				query(:WinGetText, ["[active]"])
+			def get_window_text(window_title)
+				query(:WinGetText, [window_title])
 			end
 
-			def get_control_text(control_id)
-				query(:ControlGetText, ["[active]", "", control_id])
+			def window_active?(window_title)
+				get_active_window_title == window_title
 			end
 
-			def window_active?(window_id)
-				get_active_window_title == window_id
+			def window_exist?(window_title)
+				query(:WinExists, [window_title]) == 1
 			end
 
-			def window_not_active?(window_id)
-				!window_active?(window_id)
+			def get_control_text(window_title, control_id)
+				query(:ControlGetText, [window_title, "", control_id])
 			end
 
-			def window_exist?(window_id)
-				query(:WinExists, [window_id]) == 1
-			end
-
-			def window_not_exist?(window_id)
-				!window_exist?(window_id)
+			def control_enabled?(window_title, control_id)
+				query(:ControlCommand, [window_title, "", control_id, "IsEnabled"]) == 1
 			end
 
 		private

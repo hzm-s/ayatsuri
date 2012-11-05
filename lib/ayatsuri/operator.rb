@@ -10,7 +10,7 @@ module Ayatsuri
 		include Terminator
 		include Waitable
 
-		attr_reader :params, :driver, :window_history, :completed
+		attr_reader :params, :driver, :window_history, :active_window, :completed
 		alias_method :completed?, :completed
 
 		def initialize(params)
@@ -21,6 +21,7 @@ module Ayatsuri
 		end
 
 		def assign(operation, window)
+			@active_window = window
 			window_history << window
 			send(operation.method_name)
 		end
@@ -40,9 +41,8 @@ module Ayatsuri
 		end
 
 		def wait_until_close_window(&block)
-			assigned_window_title = get_active_window_title
 			block.call
-			wait_until { window_not_active?(assigned_window_title) }
+			wait_until { active_window.not_active? }
 		end
 	end
 end

@@ -6,15 +6,44 @@ module Ayatsuri
 			let(:model) { Object.new.extend(described_class) }
 
 			before do
-				model.stub(:modify).with(*modify_args) { true }
+				model.stub(:modify).with(*modify_args) { result }
 			end
 
+			let(:result) { mock 'result from driver' }
+			let(:window_title) { mock 'window title' }
+			let(:control_id) { mock 'control id' }
+
 			describe "#close_window" do
-				subject { model.close_window "window title" }
+				subject { model.close_window window_title }
 
-				let(:modify_args) { [:WinClose, ["window title"]] }
+				let(:modify_args) { [:WinClose, [window_title]] }
 
-				it { should be_true }
+				it { should == result }
+			end
+
+			describe "#focus_control" do
+				subject { model.focus_control window_title, control_id }
+
+				let(:modify_args) { [:ControlFocus, [window_title, "", control_id]] }
+
+				it { should == result }
+			end
+
+			describe "#click_control" do
+				subject { model.click_control window_title, control_id }
+
+				let(:modify_args) { [:ControlClick, [window_title, "", control_id]] }
+
+				it { should == result }
+			end
+
+			describe "#set_text_to_control" do
+				subject { model.set_text_to_control window_title, control_id, text }
+
+				let(:text) { "a text to set control" }
+				let(:modify_args) { [:ControlSetText, [window_title, "", control_id, text]] }
+
+				it { should == result }
 			end
 		end
 	end

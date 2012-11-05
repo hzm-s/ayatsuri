@@ -11,6 +11,18 @@ module Ayatsuri
 				modify(:WinClose, [window_title])
 			end
 
+			def focus_control(window_title, control_id)
+				modify(:ControlFocus, [window_title, "", control_id])
+			end
+
+			def click_control(window_title, control_id)
+				modify(:ControlClick, [window_title, "", control_id])
+			end
+
+			def set_text_to_control(window_title, control_id, text)
+				modify(:ControlSetText, [window_title, "", control_id, text])
+			end
+
 		private
 
 			def modify(method, args)

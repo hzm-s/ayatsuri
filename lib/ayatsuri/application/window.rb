@@ -5,17 +5,44 @@ module Ayatsuri
 			class << self
 
 				def active
+					driver = Driver.instance
 					new(
-						Driver.instance.get_active_window_handle,
-						Driver.instance.get_active_window_title
+						driver,
+						driver.get_active_window_handle,
+						driver.get_active_window_title
 					)
 				end
 			end
 
-			attr_reader :handle, :title
+			attr_reader :handle, :title, :driver
 
-			def initialize(handle, title)
+			def initialize(driver, handle, title)
+				@driver = driver
 				@handle, @title = handle, title
+			end
+
+			def text
+				driver.get_window_text(title)
+			end
+
+			def active?
+				driver.window_active?(title)
+			end
+
+			def not_active?
+				!active?
+			end
+
+			def exist?
+				driver.window_exist?(title)
+			end
+
+			def not_exist?
+				!exist?
+			end
+
+			def control(control_id)
+				Control.new(self, control_id)
 			end
 
 			def ==(other)
