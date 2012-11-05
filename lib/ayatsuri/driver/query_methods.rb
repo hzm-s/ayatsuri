@@ -19,8 +19,20 @@ module Ayatsuri
 				query(:ControlGetText, ["[active]", "", control_id])
 			end
 
+			def window_active?(window_id)
+				get_active_window_title == window_id
+			end
+
+			def window_not_active?(window_id)
+				!window_active?(window_id)
+			end
+
 			def window_exist?(window_id)
 				query(:WinExists, [window_id]) == 1
+			end
+
+			def window_not_exist?(window_id)
+				!window_exist?(window_id)
 			end
 
 		private

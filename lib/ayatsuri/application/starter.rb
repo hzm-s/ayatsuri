@@ -23,25 +23,36 @@ module Ayatsuri
 			
 			class Default < Base
 
-				def start
+				def start(process)
+					process.init_dispatcher
 					driver.run_application(@exe_path)
 				end
 			end
 
-			class Clickonce < Base
+			class ProgramManager < Base
 				include Waitable
 
-				def start
+				@window_title = 'ファイル名を指定して実行'
+
+				class << self
+					attr_accessor :window_title
+				end
+
+				def start(process)
 					driver.invoke(:Send, "#r")
-					wait_until(3, "win + r") { driver.window_exist?("[CLASS:#32770]") }
-					driver.invoke(:Send, "#{@exe_path}{ENTER}")
+					wait_until(3, "open win + r") { driver.window_exist?(self.class.window_title) }
+					driver.invoke(:Send, "#{@exe_path}")
+					driver.invoke(:Send, "{ENTER}")
+					wait_until(3, "close win + r") { !driver.window_active?(self.class.window_title) }
+					process.init_dispatcher
+					true
 				end
 			end
 
 			class << self
 
 				def create(exe_path, starter_name)
-					starter_class = const_get(starter_name.to_s.capitalize)
+					starter_class = const_get(starter_name.to_s)
 					starter_class.new(exe_path)
 				end
 			end

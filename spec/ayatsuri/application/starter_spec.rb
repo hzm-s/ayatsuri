@@ -1,9 +1,13 @@
 require 'spec_helper'
 
 shared_context "starter" do
-	before { Ayatsuri::Driver.stub(:instance) { driver } }
+	before do
+		Ayatsuri::Driver.stub(:instance) { driver }
+		driver.stub(:invoke)
+	end
 	let(:exe_path) { "/path/to/application.exe" }
 	let(:driver) { mock 'driver instance' }
+	let(:process) { mock 'starting application process' }
 end
 
 module Ayatsuri
@@ -13,7 +17,7 @@ module Ayatsuri
 
 			subject { described_class.create exe_path, starter_name }
 
-			let(:starter_name) { :fake }
+			let(:starter_name) { :Fake }
 
 			before do
 				stub_const("Ayatsuri::Application::Starter::Fake", Class.new)
@@ -27,18 +31,18 @@ module Ayatsuri
 
 		class Starter
 
-			describe Clickonce do
+			describe ProgramManager do
 				include_context "starter"
 
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start }
+					subject { model.start process }
 
 					before do
-						driver.stub(:invoke).with(:Send, "#r") { true }
 						driver.stub(:window_exist?) { true }
-						driver.stub(:invoke).with(:Send, "#{exe_path}{ENTER}") { true }
+						driver.stub(:window_active?) { false }
+						process.should_receive(:init_dispatcher)
 					end
 
 					it { should be_true }
@@ -51,9 +55,10 @@ module Ayatsuri
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start }
+					subject { model.start process }
 
 					before do
+						process.should_receive(:init_dispatcher)
 						driver.stub(:run_application).with(exe_path) { true }
 					end
 

@@ -15,7 +15,6 @@ module Ayatsuri
 			end
 
 			def run
-				init_dispatcher
 				start_application
 				start_dispatch
 			end
@@ -28,7 +27,7 @@ module Ayatsuri
 			end
 
 			def start_application
-				@starter.start
+				@starter.start(self)
 			end
 
 			def start_dispatch
@@ -47,7 +46,7 @@ module Ayatsuri
 
 			attr_reader *APPLICATION_ATTRIBUTE_METHODS
 
-			def ayatsuri_for(exe_path, starter_name=:default)
+			def ayatsuri_for(exe_path, starter_name=:Default)
 				@starter = Starter.create(exe_path, starter_name)
 			end
 

@@ -38,5 +38,11 @@ module Ayatsuri
 			quit_application
 			self
 		end
+
+		def wait_until_close_window(&block)
+			assigned_window_title = get_active_window_title
+			block.call
+			wait_until { window_not_active?(assigned_window_title) }
+		end
 	end
 end

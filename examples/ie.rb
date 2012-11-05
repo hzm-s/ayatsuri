@@ -27,20 +27,19 @@ class IEOperator < Ayatsuri::Operator
 	end
 
 	def overwrite
-		input "!y"
+		wait_until_close_window { input "!y" }
 	end
 end
 
 class IE < Ayatsuri::Application
-	ayatsuri_for 'iexplore.exe'
+	ayatsuri_for 'iexplore', :ProgramManager
 
 	define_operation_order IEOperator do
 		window_title /設定/,				:skip_setup,	:optional
 		window_title /^空白の/,			:input_keyword
 		window_title /\- .+ \-/,		:invoke_save
 		window_title /保存/,				:save_file
-		window_title /保存の確認$/,	:overwrite,		:optional
-		window_title /.+/,					:skip,				:optional
+		window_title /保存/,				:overwrite,		:optional
 		window_title /\- .+ \-/,		:complete
 	end
 

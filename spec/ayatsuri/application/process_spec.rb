@@ -15,7 +15,6 @@ module Ayatsuri
 				subject { model.run }
 
 				it "run autmation process methods" do
-					model.should_receive(:init_dispatcher).ordered
 					model.should_receive(:start_application).ordered
 					model.should_receive(:start_dispatch).ordered
 					subject
