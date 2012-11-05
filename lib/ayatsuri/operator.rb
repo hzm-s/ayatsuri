@@ -1,16 +1,18 @@
 module Ayatsuri
 	class Operator
-		autoload :ActionProxy,		'operator/action_proxy'
-		autoload :Terminator,			'operator/terminator'
-		autoload :WindowHistory,	'operator/window_history'
+		autoload :ActionHelper,	'ayatsuri/operator/action_helper'
+		autoload :ActionProxy,		'ayatsuri/operator/action_proxy'
+		autoload :Terminator,			'ayatsuri/operator/terminator'
+		autoload :WindowHistory,	'ayatsuri/operator/window_history'
 	end
 
 	class Operator
 		include ActionProxy
-		include Terminator
 		include Waitable
+		include ActionHelper
+		include Terminator
 
-		attr_reader :params, :driver, :window_history, :active_window, :completed
+		attr_reader :params, :driver, :window_history, :assigned_window, :completed
 		alias_method :completed?, :completed
 
 		def initialize(params)
@@ -21,7 +23,8 @@ module Ayatsuri
 		end
 
 		def assign(operation, window)
-			@active_window = window
+			p "assign: #{operation.method_name}"
+			@assigned_window = window
 			window_history << window
 			send(operation.method_name)
 		end
@@ -38,11 +41,6 @@ module Ayatsuri
 			@completed = true
 			quit_application
 			self
-		end
-
-		def wait_until_close_window(&block)
-			block.call
-			wait_until { active_window.not_active? }
 		end
 	end
 end

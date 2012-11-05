@@ -1,13 +1,13 @@
-$LOAD_PATH << File.join(File.dirname(__FILE__), 'ayatsuri')
+require 'ayatsuri/errors'
 
-require 'errors'
+Encoding.default_internal = Encoding::WINDOWS_31J
 
 module Ayatsuri
-	autoload :Application,	'application'
-	autoload :Driver,				'driver'
-	autoload :Operation,		'operation'
-	autoload :Operator,			'operator'
-	autoload :Waitable,			'wait'
+	autoload :Application,	'ayatsuri/application'
+	autoload :Driver,				'ayatsuri/driver'
+	autoload :Operation,		'ayatsuri/operation'
+	autoload :Operator,			'ayatsuri/operator'
+	autoload :Waitable,			'ayatsuri/wait'
 
 	class Interval
 		@application_monitor	= 1

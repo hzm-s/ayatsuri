@@ -1,8 +1,8 @@
 module Ayatsuri
 	class Operation
-		autoload :Builder,		'operation/builder'
-		autoload :Condition,	'operation/condition'
-		autoload :Order,			'operation/order'
+		autoload :Builder,		'ayatsuri/operation/builder'
+		autoload :Condition,	'ayatsuri/operation/condition'
+		autoload :Order,			'ayatsuri/operation/order'
 	end
 
 	class Operation

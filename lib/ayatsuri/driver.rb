@@ -2,9 +2,9 @@ require 'win32ole'
 
 module Ayatsuri
 	class Driver
-		autoload :EncodeHelper,			'driver/encode_helper'
-		autoload :ModifierMethods,	'driver/modifier_methods'
-		autoload :QueryMethods, 		'driver/query_methods'
+		autoload :EncodeHelper,			'ayatsuri/driver/encode_helper'
+		autoload :ModifierMethods,	'ayatsuri/driver/modifier_methods'
+		autoload :QueryMethods, 		'ayatsuri/driver/query_methods'
 
 		include ModifierMethods
 		include QueryMethods

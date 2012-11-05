@@ -1,9 +1,9 @@
 module Ayatsuri
 	class Application
-		autoload :ActiveWindow,	'application/active_window'
-		autoload :Control,			'application/control'
-		autoload :Starter,			'application/starter'
-		autoload :Window,				'application/window'
+		autoload :ActiveWindow,	'ayatsuri/application/active_window'
+		autoload :Control,			'ayatsuri/application/control'
+		autoload :Starter,			'ayatsuri/application/starter'
+		autoload :Window,				'ayatsuri/application/window'
 	end
 
 	class Application

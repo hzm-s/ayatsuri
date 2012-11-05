@@ -23,6 +23,7 @@ module Ayatsuri
 
 				def next
 					wait_until(TIMEOUT, "active window change") do
+						p "last: #{@last.handle}@#{@last.title.encode} current: #{get_active_window.handle}@#{get_active_window.title.encode}"
 						@last != (@current = get_active_window)
 					end
 					return @last = @current
