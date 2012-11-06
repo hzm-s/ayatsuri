@@ -27,7 +27,7 @@ class IEOperator < Ayatsuri::Operator
 	end
 
 	def overwrite
-		wait_until_close_window { input "!y" }
+		input "!y"
 	end
 end
 
@@ -35,11 +35,11 @@ class IE < Ayatsuri::Application
 	ayatsuri_for 'iexplore', :ProgramManager
 
 	define_operation_order IEOperator do
-		operate(:input_keyword) 	{ active_window.title =~ /^空白の/ }
-		operate(:invoke_save)			{ active_window.title =~ /\- .+ \-/ }
-		operate(:save_file)				{ active_window.title =~ /保存/}
-		operate(:overwrite,	:if)	{ active_window.content =~ /上書き/ }
-		operate(:complete)				{ active_window.title =~ /\- .+ \-/ }
+		operate(:input_keyword) 			{ active_window.title =~ /^空白の/ }
+		operate(:invoke_save)					{ active_window.title =~ /\- .+ \-/ }
+		operate(:save_file)						{ active_window.title =~ /保存/}
+		operate(:overwrite,	limit: 3)	{ active_window.content =~ /上書き/ }
+		operate(:complete)						{ active_window.title =~ /\- .+ \-/ }
 	end
 
 	def save_search_result(keyword, save_path)

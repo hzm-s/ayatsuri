@@ -13,23 +13,34 @@ module Ayatsuri
 		end
 
 		describe "#assign" do
-			subject { model.assign operation, window }
+			subject { model.assign operation }
 
 			let(:operation) { mock 'operation' }
-			let(:window) { mock 'window' }
 
 			before do
-				model.stub(:window_history) { window_history }
 				operation.stub(:method_name) { :operate_method }
 			end
 
-			let(:window_history) { mock 'window history' }
-
 			it "calls operation.method_name to self" do
-				window_history.should_receive(:<<).with(window)
-				model.should_receive(operation.method_name)
+				model.should_receive(:log_window_history).ordered
+				model.should_receive(operation.method_name).ordered
 				subject
 			end
+		end
+
+		describe "#log_window_history" do
+			subject { model.log_window_history }
+
+			before do
+				model.stub(:active_window) { window }
+				model.stub(:window_history) { history }
+				history.stub(:log).with(window) { window }
+			end
+
+			let(:window) { mock 'window' }
+			let(:history) { mock 'window history' }
+
+			it { should == window }
 		end
 
 		describe "#complete!" do

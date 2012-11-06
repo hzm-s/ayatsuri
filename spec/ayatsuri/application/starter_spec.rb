@@ -7,7 +7,6 @@ shared_context "starter" do
 	end
 	let(:exe_path) { "/path/to/application.exe" }
 	let(:driver) { mock 'driver instance' }
-	let(:process) { mock 'starting application process' }
 end
 
 module Ayatsuri
@@ -37,12 +36,11 @@ module Ayatsuri
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start process }
+					subject { model.start }
 
 					before do
 						driver.stub(:window_exist?) { true }
 						driver.stub(:window_active?) { false }
-						process.should_receive(:init_dispatcher)
 					end
 
 					it { should be_true }
@@ -55,10 +53,9 @@ module Ayatsuri
 				let(:model) { described_class.new exe_path }
 
 				describe "#start" do
-					subject { model.start process }
+					subject { model.start }
 
 					before do
-						process.should_receive(:init_dispatcher)
 						driver.stub(:run_application).with(exe_path) { true }
 					end
 

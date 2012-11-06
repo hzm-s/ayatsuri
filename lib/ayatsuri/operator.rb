@@ -12,7 +12,7 @@ module Ayatsuri
 		include ActionHelper
 		include Terminator
 
-		attr_reader :params, :driver, :window_history, :assigned_window, :completed
+		attr_reader :params, :driver, :window_history, :completed
 		alias_method :completed?, :completed
 
 		def initialize(params)
@@ -22,10 +22,8 @@ module Ayatsuri
 			@completed = false
 		end
 
-		def assign(operation, window)
-			p operation
-			@assigned_window = window
-			window_history << window
+		def assign(operation)
+			log_window_history
 			send(operation.method_name)
 		end
 
@@ -41,6 +39,10 @@ module Ayatsuri
 			@completed = true
 			quit_application
 			self
+		end
+
+		def log_window_history
+			window_history.log(active_window)
 		end
 	end
 end

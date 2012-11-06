@@ -8,6 +8,7 @@ module Ayatsuri
 
 			def <<(window)
 				@history << window
+				window
 			end
 
 			def uniq
@@ -17,6 +18,8 @@ module Ayatsuri
 			def all
 				@history
 			end
+
+			alias_method :log, :<<
 		end
 	end
 end

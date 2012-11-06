@@ -11,7 +11,7 @@ module Ayatsuri
 				end
 
 				def start
-					raise StandardError, "Not implemented #start for #{self.class}"
+					raise StandardError, "'start` is not implemented for #{self.class}"
 				end
 
 			protected
@@ -23,9 +23,9 @@ module Ayatsuri
 			
 			class Default < Base
 
-				def start(process)
-					process.init_dispatcher
+				def start
 					driver.run_application(@exe_path)
+					true
 				end
 			end
 
@@ -38,14 +38,13 @@ module Ayatsuri
 					attr_accessor :window_title
 				end
 
-				def start(process)
+				def start
 					driver.invoke(:Send, "#r")
 					wait_until(3, "open win + r") { driver.window_exist?(self.class.window_title) }
 					driver.invoke(:Send, "#{@exe_path}")
 					sleep 1
 					driver.invoke(:Send, "{ENTER}")
 					wait_until(3, "close win + r") { !driver.window_active?(self.class.window_title) }
-					process.init_dispatcher
 					true
 				end
 			end

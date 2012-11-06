@@ -8,11 +8,9 @@ module Ayatsuri
 
 	class Application
 		class Process
-			attr_reader :dispatcher
 
 			def initialize(starter, operation_order, operator)
 				@starter, @operation_order, @operator = starter, operation_order, operator
-				@dispatcher = nil
 			end
 
 			def run
@@ -20,19 +18,16 @@ module Ayatsuri
 				start_dispatch
 			end
 
-			def init_dispatcher
-				@dispatcher = ActiveWindow::Dispatcher.new(
-					ActiveWindow::Change.init,
-					@operation_order
-				)
+			def start_application
+				@starter.start
 			end
 
-			def start_application
-				@starter.start(self)
+			def dispatcher
+				@dispatcher ||= Operation::Dispatcher.new(@operator, @operation_order)
 			end
 
 			def start_dispatch
-				dispatcher.start(@operator)
+				dispatcher.start
 			rescue => exception
 				@operator.quit_application
 				raise exception

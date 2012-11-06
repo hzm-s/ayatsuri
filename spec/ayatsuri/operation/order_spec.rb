@@ -66,7 +66,6 @@ module Ayatsuri
 					context "when operation is NOT optional" do
 						let(:assigned) { false }
 						let(:optional) { false }
-						it { should be_instance_of(Operation::Unassigned) }
 					end
 				end
 			end

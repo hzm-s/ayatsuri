@@ -13,25 +13,27 @@ module Ayatsuri
 			describe "#start" do
 				subject { model.start }
 	
-				context "when all operations are complete" do
-					before do
-						operator.stub(:completed?).and_return(false, false, false, true)
-						order.stub(:next).and_return(operation)
-						operator.stub(:assign).with(operation)
-					end
+				before do
+					operator.stub(:completed?).and_return(false, false, false, true)
+					order.stub(:next).and_return(operation)
+					model.stub(:dispatch).with(operation)
+				end
 	
-					it { should == order }
+				it { should == order }
+			end
+			
+			describe "#dispatch" do
+				subject { model.dispatch operation }
+
+				before do
+					operation.stub(:decide).with(operator) { decision }
 				end
 
-				context "when empty order before operator completed" do
-					before do
-						operator.stub(:completed?).and_return(false, false, true)
-						order.stub(:next).and_raise(ex)
-					end
+				let(:decision) { mock 'operation decision' }
 
-					let(:ex) { Ayatsuri::NothingNextOperation }
-
-					it { expect { subject }.to raise_error(ex) }
+				it "accepts decision" do
+					decision.should_receive(:perform).with(operator)
+					subject
 				end
 			end
 		end

@@ -14,6 +14,9 @@ module Ayatsuri
 	class Timeout < AyatsuriError
 	end
 
+	class ConditionMatchingTimeout < AyatsuriError
+	end
+
 	class ApplicationNotRunning < AyatsuriError
 	end
 

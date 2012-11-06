@@ -2,35 +2,55 @@ require 'spec_helper'
 
 module Ayatsuri
 	describe Operation do
-		let(:model) { described_class.new condition, method_name, optional }
+		let(:model) { described_class.new condition, method_name, option }
 
 		let(:condition) { mock 'condition' }
 		let(:method_name) { :operation_method }
-		let(:optional) { mock 'optional operation flag' }
+		let(:option) { { limit: limit } }
 
-		describe ".new" do
-			subject { model }
-			it { subject.method_name.should == method_name }
-			it { subject.optional?.should == optional }
-		end
+		describe "#decide" do
+			subject { model.decide operator }
 
-		describe "#assigned?" do
-			subject { model.assigned? window }
-
-			let(:window) { mock 'dispatched window' }
+			let(:operator) { mock 'operator' }
+			let(:decision) { mock 'decision' }
 
 			before do
-				condition.stub(:satisfy?).with(window) { assigned }
+				condition.stub(:match?).with(operator, limit) { match }
 			end
 
-			context "when assigned" do
-				let(:assigned) { true }
-				it { should be_true }
+			context "when condition match" do
+				let(:match) { true }
+				let(:limit) { nil }
+
+				before do
+					Operation::Decision::Assign.stub(:new).with(model) { decision }
+				end
+
+				it { should == decision }
 			end
 
-			context "when NOT assigned" do
-				let(:assigned) { false }
-				it { should be_false }
+			context "when condition NOT match" do
+				let(:match) { false }
+
+				context "given limit option" do
+					let(:limit) { 1 }
+
+					before do
+						Operation::Decision::Skip.stub(:new).with(model) { decision }
+					end
+
+					it { should == decision }
+				end
+
+				context "given no limit option" do
+					let(:limit) { nil }
+
+					before do
+						Operation::Decision::Timeout.stub(:new).with(model) { decision }
+					end
+
+					it { should == decision }
+				end
 			end
 		end
 	end

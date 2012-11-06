@@ -54,6 +54,8 @@ module Ayatsuri
 					self.handle == other.handle &&
 					self.title == other.title
 			end
+
+			alias_method :content, :text
 		end
 	end
 end

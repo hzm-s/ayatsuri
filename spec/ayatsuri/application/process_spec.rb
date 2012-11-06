@@ -21,19 +21,6 @@ module Ayatsuri
 				end
 			end
 			
-			describe "#init_dispatcher" do
-				subject { model.init_dispatcher }
-
-				before do
-					ActiveWindow::Change.stub(:init) { active_window_change }
-					ActiveWindow::Dispatcher.stub(:new).with(active_window_change, operation_order) { dispatcher }
-				end
-
-				let(:active_window_change) { mock 'active window change' }
-
-				it { should == dispatcher }
-			end
-
 			describe "#start_application" do
 				subject { model.start_application }
 
@@ -51,6 +38,18 @@ module Ayatsuri
 				end
 			end
 
+			describe "#dispatcher" do
+				subject { model.dispatcher }
+
+				before do
+					Operation::Dispatcher.stub(:new).with(operator, operation_order) { dispatcher }
+				end
+
+				let(:dispatcher) { mock 'dispatcher' }
+
+				it { should == dispatcher }
+			end
+
 			describe "#start_dispatch" do
 				subject { model.start_dispatch }
 
@@ -59,7 +58,7 @@ module Ayatsuri
 					model.stub(:operator) { operator }
 				end
 
-				let(:stub_dispatch) { dispatcher.stub(:start).with(operator) }
+				let(:stub_dispatch) { dispatcher.stub(:start) }
 
 				context "when successful" do
 					before { stub_dispatch.and_return(true) }

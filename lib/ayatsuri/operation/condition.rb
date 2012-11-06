@@ -1,68 +1,22 @@
 module Ayatsuri
 	class Operation
 		class Condition
+			include Waitable
 
-			class Matcher
-				module ByRegexp
+			attr_reader :block
 
-					def match?(actual)
-						actual =~ self.expectation
-					end
-				end
-
-				module ByEqual
-
-					def match?(actual)
-						actual == self.expectation
-					end
-				end
-
-				class << self
-
-					def create(expectation)
-						new(expectation).extend(strategy_module(expectation))
-					end
-
-				private
-
-					def strategy_module(expectation)
-						case expectation
-						when Regexp
-							ByRegexp
-						else
-								ByEqual
-						end
-					end
-				end
-
-				attr_reader :expectation
-
-				def initialize(expectation)
-					@expectation = expectation
-				end
-
-				def inspect
-					"#<Condition::Matcher:#{@expectation}>"
-				end
+			def initialize(&expected_condition_block)
+				@block = expected_condition_block
 			end
 
-			class << self
-
-				def create(query_method, expectation)
-					new(query_method, Matcher.create(expectation))
+			def match?(operator, timeout)
+				wait_until(timeout, "condition match") do
+					operator.instance_eval(&@block)
 				end
-			end
-
-			def initialize(query_method, matcher)
-				@query_method, @matcher = query_method, matcher
-			end
-
-			def satisfy?(candidate)
-				@matcher.match?(candidate.send(@query_method))
-			end
-
-			def inspect
-				"#{@matcher.inspect} => #{@query_method}>"
+			rescue Ayatsuri::Timeout
+				false
+			else
+				true
 			end
 		end
 	end
