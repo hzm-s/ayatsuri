@@ -6,7 +6,7 @@ Automation for Ruby
 
 Ayatsuri is small framework to automate a Windows application.
 
-## requirement
+## Requirement
 
 [AutoItX3](http://www.autoitscript.com/site/autoit/)
 
@@ -39,7 +39,7 @@ Ayatsuri is small framework to automate a Windows application.
       define_operation_order SmartOperator do
         operate(:init) { active_window.title =~ /init window$/ }
         operate(:main) { active_window.title =~ /^Some App/ }
-        operate(:confrim, 5) { active_window.content =~ /Do you .+ \?/ }
+        operate(:confrim, limit: 5) { active_window.content =~ /Do you .+ \?/ }
         operate(:complete) { active_window.title =~ /^Some App/ }
       end
 
