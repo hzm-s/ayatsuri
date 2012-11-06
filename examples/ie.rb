@@ -35,12 +35,11 @@ class IE < Ayatsuri::Application
 	ayatsuri_for 'iexplore', :ProgramManager
 
 	define_operation_order IEOperator do
-		window_title /設定/,				:skip_setup,	:optional
-		window_title /^空白の/,			:input_keyword
-		window_title /\- .+ \-/,		:invoke_save
-		window_title /保存/,				:save_file
-		window_title /保存/,				:overwrite,		:optional
-		window_title /\- .+ \-/,		:complete
+		operate(:input_keyword) 	{ active_window.title =~ /^空白の/ }
+		operate(:invoke_save)			{ active_window.title =~ /\- .+ \-/ }
+		operate(:save_file)				{ active_window.title =~ /保存/}
+		operate(:overwrite,	:if)	{ active_window.content =~ /上書き/ }
+		operate(:complete)				{ active_window.title =~ /\- .+ \-/ }
 	end
 
 	def save_search_result(keyword, save_path)

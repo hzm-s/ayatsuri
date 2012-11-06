@@ -24,6 +24,25 @@ module Ayatsuri
 
 			describe "when constructed" do
 
+				describe "#operate" do
+					subject { model.operate method_name, if_flag, &condition_block }
+
+					let(:method_name) { :method_name_for_operator }
+					let(:if_flag) { mock ('if flag') }
+					let(:condition_block) { lambda { "condition matcher" } }
+						
+					before do
+						Condition.stub(:new).with(&condition_block).and_return(condition)
+						Operation.stub(:new).with(condition, method_name, if_flag) { operation }
+						model.stub(:add_operation).with(operation) { operation }
+					end
+
+					let(:condition) { mock 'condition' }
+					let(:operation) { mock 'operation' }
+
+					it { should == operation }
+				end
+
 				describe "#window_title" do
 					subject { model.window_title expect, method_name, optional }
 

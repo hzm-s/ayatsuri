@@ -21,7 +21,6 @@ module Ayatsuri
 			end
 
 			def retrieve(window)
-#				p "retrieve operation for: #{window.handle}@#{window.title.encode}"
 				p window
 				primary = next_operation
 				return primary if primary.assigned?(window)
@@ -29,7 +28,7 @@ module Ayatsuri
 				retrieve(window)
 			end
 
-			def next_operation
+			def next
 				@operation_iterator.resume
 			end
 		end

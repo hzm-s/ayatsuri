@@ -17,6 +17,12 @@ module Ayatsuri
 				@operations = []
 			end
 
+			def operate(method_name, if_flag, &condition_block)
+				condition = Condition.new(&condition_block)
+				operation = Operation.new(condition, method_name, if_flag)
+				add_operation(operation)
+			end
+
 			def window_title(expect, method_name, optional=true)
 				add_operation(
 					create_operation(:title, expect, method_name, optional)

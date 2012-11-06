@@ -71,14 +71,14 @@ module Ayatsuri
 				end
 			end
 
-			describe "#next_operation" do
+			describe "#next" do
 				before { @model = described_class.new [:op1, :op2, :op3] }
 
 				it "iterates given operations" do
-					@model.next_operation.should == :op1
-					@model.next_operation.should == :op2
-					@model.next_operation.should == :op3
-					expect { @model.next_operation }.to raise_error(Ayatsuri::NothingNextOperation)
+					@model.next.should == :op1
+					@model.next.should == :op2
+					@model.next.should == :op3
+					expect { @model.next }.to raise_error(Ayatsuri::NothingNextOperation)
 				end
 			end
 		end
