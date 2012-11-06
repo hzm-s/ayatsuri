@@ -45,10 +45,14 @@ module Ayatsuri
 				Control.new(self, control_id)
 			end
 
+			def inspect
+				"#<Window:#{handle}(#{title.encode(Encoding::WINDOWS_31J)})>"
+			end
+
 			def ==(other)
 				other.instance_of?(self.class) &&
-					self.handle == other.handle &&
-					self.title == other.title
+					self.handle == other.handle# &&
+					#self.title == other.title
 			end
 		end
 	end

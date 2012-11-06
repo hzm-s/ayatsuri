@@ -23,7 +23,7 @@ module Ayatsuri
 		end
 
 		def assign(operation, window)
-			p "assign: #{operation.method_name}"
+			p operation
 			@assigned_window = window
 			window_history << window
 			send(operation.method_name)

@@ -6,7 +6,7 @@ module Ayatsuri
 				Application::Window.active
 			end
 
-			def wait_until_close_window(subject_window, &block)
+			def wait_until_close(subject_window, &block)
 				block.call if block
 				wait_until { subject_window.not_active? }
 			end

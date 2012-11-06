@@ -40,6 +40,10 @@ module Ayatsuri
 				def initialize(expectation)
 					@expectation = expectation
 				end
+
+				def inspect
+					"#<Condition::Matcher:#{@expectation}>"
+				end
 			end
 
 			class << self
@@ -55,6 +59,10 @@ module Ayatsuri
 
 			def satisfy?(candidate)
 				@matcher.match?(candidate.send(@query_method))
+			end
+
+			def inspect
+				"#{@matcher.inspect} => #{@query_method}>"
 			end
 		end
 	end

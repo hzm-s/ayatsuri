@@ -9,6 +9,7 @@ module Ayatsuri
 		class Unassigned
 
 			def initialize(window)
+				@window = window
 			end
 		end
 	end
@@ -24,6 +25,10 @@ module Ayatsuri
 
 		def assigned?(window)
 			@condition.satisfy?(window)
+		end
+
+		def inspect
+			"#{@condition.inspect} => #<Operation:#{@method_name}#{"(optional)" if @optional}>"
 		end
 	end
 end
