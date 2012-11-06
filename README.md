@@ -13,7 +13,7 @@ Ayatsuri is small framework to automate a Windows application.
 ## Synopsis
     require 'ayatsuri'
     
-    class SmartOperator
+    class SmartOperator < Ayatsuri::Operator
       
       def init
         # init to operate
