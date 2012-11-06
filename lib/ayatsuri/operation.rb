@@ -15,6 +15,22 @@ module Ayatsuri
 	end
 
 	class Operation
+		class Dispatcher
+
+			def initialize(operator, order)
+				@operator, @order = operator, order
+			end
+
+			def start
+				until @operator.completed?
+					@operator.assign(@order.next)
+				end
+				@order
+			end
+		end
+	end
+
+	class Operation
 		attr_reader :optional, :method_name
 		alias_method :optional?, :optional
 

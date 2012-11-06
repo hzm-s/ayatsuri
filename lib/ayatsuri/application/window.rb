@@ -51,8 +51,8 @@ module Ayatsuri
 
 			def ==(other)
 				other.instance_of?(self.class) &&
-					self.handle == other.handle# &&
-					#self.title == other.title
+					self.handle == other.handle &&
+					self.title == other.title
 			end
 		end
 	end
