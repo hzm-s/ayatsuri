@@ -18,9 +18,9 @@ Ayatsuri is small framework to automate a Windows application.
       def init
         # init to operate
         # you can access given arguments like this
-        #   params[:arg1] #=> foo
-        #   params[:arg2] #=> bar
-        #   params[:arg3] #=> baz
+        #   params[:foo] #=> arg1
+        #   params[:bar] #=> arg2
+        #   params[:baz] #=> arg3
       end
 
       def main
@@ -43,9 +43,12 @@ Ayatsuri is small framework to automate a Windows application.
         operate(:complete) { active_window.title =~ /^Some App/ }
       end
 
-      def some_operate(foo, bar, baz)
-        run arg1: foo,
-            arg2: bar,
-            arg3, baz
+      def some_operate(arg1, arg2, arg3)
+        run foo: arg1
+            bar: arg2
+            baz: arg3
       end
     end
+
+    app = SomeApp.new
+    app.some_operate(:foo, :bar, :baz)
