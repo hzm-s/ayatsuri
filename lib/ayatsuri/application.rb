@@ -2,7 +2,9 @@ module Ayatsuri
 	class Application
 		autoload :ActiveWindow,	'ayatsuri/application/active_window'
 		autoload :Control,			'ayatsuri/application/control'
+		autoload :ControlBase,	'ayatsuri/application/control_base'
 		autoload :Starter,			'ayatsuri/application/starter'
+		autoload :TreeView,			'ayatsuri/application/tree_view'
 		autoload :Window,				'ayatsuri/application/window'
 	end
 

@@ -45,6 +45,10 @@ module Ayatsuri
 				Control.new(self, control_id)
 			end
 
+			def tree_view(control_id)
+				TreeView.new(self, control_id)
+			end
+
 			def inspect
 				"#<Window:#{handle}(#{title.encode(Encoding::WINDOWS_31J)})>\n#{text.encode(Encoding::WINDOWS_31J)}"
 			end

@@ -9,6 +9,8 @@ module Ayatsuri
 			let(:handle) { mock 'active window handle' }
 			let(:title) { mock 'active window title' }
 
+			let(:control_id) { mock 'control id' }
+
 			describe ".active" do
 				subject { described_class.active }
 
@@ -65,13 +67,17 @@ module Ayatsuri
 			describe "#control" do
 				subject { model.control control_id }
 
-				let(:control_id) { mock 'control id' }
-
 				before { Control.stub(:new).with(model, control_id) { control } }
-
 				let(:control) { mock 'control' }
-
 				it { should == control }
+			end
+
+			describe "#tree_view" do
+				subject { model.tree_view control_id }
+
+				before { TreeView.stub(:new).with(model, control_id) { tree_view } }
+				let(:tree_view) { mock 'tree view' }
+				it { should == tree_view }
 			end
 
 			describe "#==" do

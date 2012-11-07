@@ -42,7 +42,7 @@ module Ayatsuri
 					driver.invoke(:Send, "#r")
 					wait_until(3, "open win + r") { driver.window_exist?(self.class.window_title) }
 					driver.invoke(:Send, "#{@exe_path}")
-					sleep 1
+					sleep 2
 					driver.invoke(:Send, "{ENTER}")
 					wait_until(3, "close win + r") { !driver.window_active?(self.class.window_title) }
 					true

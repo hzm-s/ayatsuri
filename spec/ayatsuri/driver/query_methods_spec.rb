@@ -65,7 +65,7 @@ module Ayatsuri
 			describe "#control_enabled?" do
 				subject { model.control_enabled? window_title, control_id }
 
-				let(:query_args) { [:ControlCommand, [window_title, "", control_id, "IsEnabled"]] }
+				let(:query_args) { [:ControlCommand, [window_title, "", control_id, "IsEnabled", ""]] }
 
 				context "when enabled" do
 					let(:result) { 1 }

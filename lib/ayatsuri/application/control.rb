@@ -1,11 +1,6 @@
 module Ayatsuri
 	class Application
-		class Control
-			attr_reader :window, :id
-
-			def initialize(window, id)
-				@window, @id = window, id
-			end
+		class Control < ControlBase
 
 			def focus
 				driver.focus_control(window.title, id)
@@ -29,12 +24,6 @@ module Ayatsuri
 
 			def not_enabled?
 				!enabled?
-			end
-
-		private
-
-			def driver
-				window.driver
 			end
 		end
 	end

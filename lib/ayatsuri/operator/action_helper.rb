@@ -11,8 +11,14 @@ module Ayatsuri
 				wait_until { subject_window.not_active? }
 			end
 
-			def input_with_wait(interval=0.5, args)
-				args.each do |arg|
+			def keys(key, count)
+				buf = []
+				count.times {|n| buf << key }
+				buf
+			end
+
+			def input_with_wait(args, interval=0.2)
+				args.flatten.each do |arg|
 					driver.input arg
 					sleep interval
 				end

@@ -45,6 +45,15 @@ module Ayatsuri
 
 				it { should == result }
 			end
+
+			describe "#select_tree_view_item" do
+				subject { model.select_tree_view_item window_title, control_id, item_no }
+
+				let(:item_no) { 5 }
+				let(:modify_args) { [:ControlTreeView, [window_title, "", control_id, "Select", "##{item_no}", ""]] }
+
+				it { should == result }
+			end
 		end
 	end
 end

@@ -23,6 +23,10 @@ module Ayatsuri
 				modify(:ControlSetText, [window_title, "", control_id, text])
 			end
 
+			def select_tree_view_item(window_title, control_id, item_no)
+				modify(:ControlTreeView, [window_title, "", control_id, "Select", "##{item_no}", ""])
+			end
+
 		private
 
 			def modify(method, args)

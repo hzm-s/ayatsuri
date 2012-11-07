@@ -28,7 +28,7 @@ module Ayatsuri
 			end
 
 			def control_enabled?(window_title, control_id)
-				query(:ControlCommand, [window_title, "", control_id, "IsEnabled"]) == 1
+				query(:ControlCommand, [window_title, "", control_id, "IsEnabled", ""]) == 1
 			end
 
 		private
