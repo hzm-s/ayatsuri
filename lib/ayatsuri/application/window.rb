@@ -46,7 +46,7 @@ module Ayatsuri
 			end
 
 			def inspect
-				"#<Window:#{handle}(#{title.encode(Encoding::WINDOWS_31J)})>"
+				"#<Window:#{handle}(#{title.encode(Encoding::WINDOWS_31J)})>\n#{text.encode(Encoding::WINDOWS_31J)}"
 			end
 
 			def ==(other)

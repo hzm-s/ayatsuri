@@ -26,7 +26,7 @@ module Ayatsuri
 		private
 
 			def modify(method, args)
-				ole.send(method, *encode_for_driver(args))
+				invoke(method, encode_for_driver(args))
 			end
 		end
 	end

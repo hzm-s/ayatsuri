@@ -35,9 +35,9 @@ module Ayatsuri
 
 			def query(method, args)
 				encode_for_ayatsuri(
-					ole.send(
+					invoke(
 						method,
-						*encode_for_driver(args)
+						encode_for_driver(args)
 					)
 				)
 			end
