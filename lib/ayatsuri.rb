@@ -1,3 +1,4 @@
+require 'ayatsuri/version'
 require 'ayatsuri/errors'
 
 Encoding.default_internal = Encoding::WINDOWS_31J
