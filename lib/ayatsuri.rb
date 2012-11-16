@@ -1,8 +1,6 @@
 require 'ayatsuri/version'
 require 'ayatsuri/errors'
 
-Encoding.default_internal = Encoding::WINDOWS_31J
-
 module Ayatsuri
 	autoload :Application,	'ayatsuri/application'
 	autoload :Driver,				'ayatsuri/driver'
