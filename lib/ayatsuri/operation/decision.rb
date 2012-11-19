@@ -30,7 +30,7 @@ module Ayatsuri
 			class Skip < Base
 
 				def perform(operator)
-					operator.skip(@operation)
+					operator.skip
 				end
 			end
 		end

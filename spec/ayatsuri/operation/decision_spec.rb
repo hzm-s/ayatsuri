@@ -45,8 +45,8 @@ module Ayatsuri
 				describe "#perform" do
 					subject { described_class.new(operation).perform(operator) }
 
-					it "calls skip with operation to operator" do
-						operator.should_receive(:skip).with(operation)
+					it "calls skip to operator" do
+						operator.should_receive(:skip)
 						subject
 					end
 				end
