@@ -49,8 +49,12 @@ module Ayatsuri
 			end
 
 			def define_operation_order(operator_class, &order_block)
-				@operator_class = operator_class
-				@operation_order = Operation::Order.create(&order_block)
+				@operator_class, @order_block = operator_class, order_block
+				@operation_order = Operation::Order.create(&@order_block)
+			end
+
+			def reset_operation_order
+				@operation_order = Operation::Order.create(&@order_block)
 			end
 
 			def application_attribute_methods
@@ -62,6 +66,7 @@ module Ayatsuri
 			operator = operator_class.new(params_for_operator)
 			process = Process.new(starter, operation_order, operator)
 			process.run
+			self.class.reset_operation_order
 		end
 
 		def method_missing(method, *args, &block)
