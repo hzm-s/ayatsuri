@@ -3,10 +3,12 @@
 require 'ayatsuri'
 
 Ayatsuri::Interval.application_monitor = 2
+Ayatsuri::Operation.wait_next_operation_limit = 60
 
 class IEOperator < Ayatsuri::Operator
 
 	def skip_setup
+		sleep 5
 		input "!a"
 	end
 

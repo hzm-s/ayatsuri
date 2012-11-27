@@ -27,6 +27,12 @@ module Ayatsuri
 	end
 
 	class Operation
+
+		class << self
+			attr_accessor :wait_next_operation_limit
+			@wait_nect_operation_limit = 3600
+		end
+
 		attr_reader :method_name
 
 		def initialize(condition, method_name, option)

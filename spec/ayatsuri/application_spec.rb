@@ -60,7 +60,8 @@ module Ayatsuri
 			before do
 				operator_class.stub(:new).with(params_for_operator) { operator }
 				Application::Process.stub(:new).with(starter, operation_order, operator) { process }
-				process.should_receive(:run)
+				process.should_receive(:run).ordered
+				described_class.should_receive(:reset_operation_order).ordered
 			end
 
 			let(:starter) { mock 'application starter' }
