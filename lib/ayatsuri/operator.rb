@@ -35,6 +35,12 @@ module Ayatsuri
 			complete!
 		end
 
+		def abort
+			complete!
+			@aborted = true
+			self
+		end
+
 		def complete!
 			@completed = true
 			quit_application

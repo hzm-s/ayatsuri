@@ -69,8 +69,8 @@ module Ayatsuri
 					before { stub_dispatch.and_raise(ex) }
 					let(:ex) { AyatsuriError }
 
-					it "raise exception before quit application" do
-						operator.should_receive(:quit_application)
+					it "raise exception before abort" do
+						operator.should_receive(:abort)
 						expect { subject }.to raise_error(ex)
 					end
 				end

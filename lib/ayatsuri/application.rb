@@ -31,7 +31,7 @@ module Ayatsuri
 			def start_dispatch
 				dispatcher.start
 			rescue => exception
-				@operator.quit_application
+				@operator.abort
 				raise exception
 			end
 		end
@@ -66,6 +66,9 @@ module Ayatsuri
 			operator = operator_class.new(params_for_operator)
 			process = Process.new(starter, operation_order, operator)
 			process.run
+		rescue => e
+			raise e
+		ensure
 			self.class.reset_operation_order
 		end
 
