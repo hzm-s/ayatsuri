@@ -17,7 +17,7 @@ module Ayatsuri
 				@operations = []
 			end
 
-			def operate(method_name, option={ limit: 3600 }, &condition_block)
+			def operate(method_name, option={ limit: nil }, &condition_block)
 				condition = Condition.new(&condition_block)
 				operation = Operation.new(condition, method_name, option)
 				add_operation(operation)

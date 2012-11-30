@@ -30,7 +30,7 @@ module Ayatsuri
 
 		class << self
 			attr_accessor :wait_next_operation_limit
-			@wait_nect_operation_limit = 3600
+			@wait_next_operation_limit = 3600
 		end
 
 		attr_reader :method_name
@@ -41,7 +41,7 @@ module Ayatsuri
 		end
 
 		def decide(operator)
-			return Decision::Assign.new(self) if @condition.match?(operator, @option[:limit])
+			return Decision::Assign.new(self) if @condition.match?(operator, @option[:limit] || self.class.wait_next_operation_limit)
 			return Decision::Skip.new(self) if @option[:limit]
 			return Decision::Timeout.new(self)
 		end
