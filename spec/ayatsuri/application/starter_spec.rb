@@ -62,6 +62,27 @@ module Ayatsuri
 					it { should be_true }
 				end
 			end
+
+			describe Wscript do
+				include_context "starter"
+
+				let(:model) { described_class.new exe_path }
+
+				describe "#start" do
+					subject { model.start }
+
+					before do
+						exe_path_obj = Pathname.new(exe_path)
+						Dir.stub(:chdir).with(exe_path_obj.parent)
+						WIN32OLE.stub(:new).with("WScript.Shell") { wscript_ole }
+						wscript_ole.stub(:Run).with(exe_path_obj.basename) { true }
+					end
+
+					let(:wscript_ole) { mock 'WScript.Shell OLE' }
+
+					it { should be_true }
+				end
+			end
 		end
 	end
 end

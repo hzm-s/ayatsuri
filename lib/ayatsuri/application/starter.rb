@@ -1,5 +1,8 @@
 #encoding:utf-8
 
+require 'win32ole'
+require 'pathname'
+
 module Ayatsuri
 	class Application
 		class Starter
@@ -26,6 +29,35 @@ module Ayatsuri
 				def start
 					driver.run_application(@exe_path)
 					true
+				end
+			end
+
+			class Wscript < Base
+				include Driver::EncodeHelper
+
+				def start
+					Dir.chdir(application_exe_dir) do
+						wscript_ole.Run(application_exe)
+					end
+					true
+				end
+
+			private
+
+				def wscript_ole
+					WIN32OLE.new("WScript.Shell")
+				end
+
+				def application_exe_path
+					@application_exe_path ||= Pathname.new(@exe_path)
+				end
+
+				def application_exe_dir
+					application_exe_path.parent
+				end
+
+				def application_exe
+					application_exe_path.basename.to_s
 				end
 			end
 
