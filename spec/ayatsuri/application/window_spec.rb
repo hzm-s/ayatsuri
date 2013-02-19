@@ -80,6 +80,18 @@ module Ayatsuri
 				it { should == tree_view }
 			end
 
+			describe "#coordinate" do
+				subject { model.coordinate x, y }
+
+				let(:x) { 200 }
+				let(:y) { 100 }
+				
+				before { Coordinate.stub(:new).with(model, x, y) { coordinate } }
+				let(:coordinate) { mock 'coordinate' }
+
+				it { should == coordinate }
+			end
+
 			describe "#==" do
 				subject { model == other }
 

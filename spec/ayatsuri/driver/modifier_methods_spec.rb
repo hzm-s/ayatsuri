@@ -13,6 +13,14 @@ module Ayatsuri
 			let(:window_title) { mock 'window title' }
 			let(:control_id) { mock 'control id' }
 
+			describe "#activate_window" do
+				subject { model.activate_window window_title }
+
+				let(:modify_args) { [:WinActivate, [window_title]] }
+
+				it { should == result }
+			end
+
 			describe "#close_window" do
 				subject { model.close_window window_title }
 
@@ -33,6 +41,19 @@ module Ayatsuri
 				subject { model.click_control window_title, control_id }
 
 				let(:modify_args) { [:ControlClick, [window_title, "", control_id]] }
+
+				it { should == result }
+			end
+
+			describe "#click_coordinate" do
+				subject { model.click_coordinate button, x, y, clicks }
+
+				let(:button) { "left" }
+				let(:x) { 200 }
+				let(:y) { 100 }
+				let(:clicks) { 1 }
+
+				let(:modify_args) { [:MouseClick, [button, x, y, clicks]] }
 
 				it { should == result }
 			end

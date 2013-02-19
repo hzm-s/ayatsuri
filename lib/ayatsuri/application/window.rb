@@ -49,6 +49,10 @@ module Ayatsuri
 				TreeView.new(self, control_id)
 			end
 
+			def coordinate(x, y)
+				Coordinate.new(self, x, y)
+			end
+
 			def inspect
 				"#<Window:#{handle}(#{title.encode(Encoding::WINDOWS_31J)})>\n#{text.encode(Encoding::WINDOWS_31J)}"
 			end

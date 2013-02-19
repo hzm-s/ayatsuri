@@ -6,11 +6,14 @@ module Ayatsuri
 
 		before do
 			described_class.any_instance.stub(:ole) { stub_ole }
+			described_class.any_instance.stub(:after_init) { nil }
 		end
 
 		after { described_class.flush }
 
-		let(:stub_ole) { mock 'win32ole for autoit X3' }
+		let(:stub_ole) do
+			double('win32ole for autoit X3')
+		end
 
 		describe ".instance" do
 			subject { described_class.instance }

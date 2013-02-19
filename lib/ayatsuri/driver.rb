@@ -26,6 +26,7 @@ module Ayatsuri
 
 		def initialize
 			@ole = WIN32OLE.new('AutoItX3.Control')
+			after_init
 		end
 
 		private_class_method :new
@@ -38,6 +39,10 @@ module Ayatsuri
 
 		def run_application(exe_path)
 			invoke(:Run, [exe_path])
+		end
+
+		def after_init
+			invoke(:AutoItSetOption, ["MouseCoordMode", 0])
 		end
 	
 	protected

@@ -6,6 +6,7 @@ module Ayatsuri
 		autoload :Starter,			'ayatsuri/application/starter'
 		autoload :TreeView,			'ayatsuri/application/tree_view'
 		autoload :Window,				'ayatsuri/application/window'
+		autoload :Coordinate,		'ayatsuri/application/coordinate'
 	end
 
 	class Application

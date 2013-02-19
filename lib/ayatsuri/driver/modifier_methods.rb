@@ -7,6 +7,10 @@ module Ayatsuri
 				modify(:Send, stuff)
 			end
 
+			def activate_window(window_title)
+				modify(:WinActivate, [window_title])
+			end
+
 			def close_window(window_title)
 				modify(:WinClose, [window_title])
 			end
@@ -25,6 +29,10 @@ module Ayatsuri
 
 			def select_tree_view_item(window_title, control_id, item_no)
 				modify(:ControlTreeView, [window_title, "", control_id, "Select", "##{item_no}", ""])
+			end
+
+			def click_coordinate(button, x, y, clicks)
+				modify(:MouseClick, [button, x, y, clicks])
 			end
 
 		private
