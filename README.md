@@ -1,6 +1,6 @@
 # Ayatsuri
 
-Automation for Ruby
+Windows app automation that doesn't hurt
 
 ## Description
 
