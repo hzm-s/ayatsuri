@@ -1,3 +1,4 @@
+[![Code Climate](https://codeclimate.com/github/haazime/ayatsuri.png)](https://codeclimate.com/github/haazime/ayatsuri)
 # Ayatsuri
 
 Windows app automation that doesn't hurt
